@@ -45,7 +45,7 @@ export const getCells = async (lock: CKBComponents.Script, type?: CKBComponents.
       },
       body,
     })
-    const response = (await res.json()) as IndexerResponse
+    const response = await res.json()
     return toCamelcase(response.result.objects)
   } catch (error) {
     console.error('error', error)
