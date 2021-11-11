@@ -1,0 +1,8 @@
+{
+  "name": "compact-nft-generator",
+  "version": "1.0.0",
+  "description": "The generator of compact-NFT",
+  "main": "index.js",
+  "author": "dev@nervina.io",
+  "license": "MIT"
+}
