@@ -3,12 +3,12 @@ import fetch from 'node-fetch'
 import { REGISTRY_AGGREGATOR_RPC } from '../utils/config'
 import { toCamelcase } from '../utils/util'
 
-export const registerCompactNFT = async (lock: CKBComponents.Script): Promise<string> => {
+export const registerCompactNFT = async (lockHashes: CKBComponents.Hash[]): Promise<string[]> => {
   let payload = {
     id: 1,
     jsonrpc: '2.0',
     method: 'register_compact_nft',
-    params: [serializeScript(lock)],
+    params: lockHashes,
   }
   const body = JSON.stringify(payload, null, '  ')
   try {
@@ -25,4 +25,3 @@ export const registerCompactNFT = async (lock: CKBComponents.Script): Promise<st
     console.error('error', error)
   }
 }
-
