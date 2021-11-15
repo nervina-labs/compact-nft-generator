@@ -1,6 +1,6 @@
 import CKB from '@nervosnetwork/ckb-sdk-core'
 import { bytesToHex, serializeScript, blake160, addressToScript, scriptToHash } from '@nervosnetwork/ckb-sdk-utils'
-import { registryLockScript, secp256k1Dep} from '../account'
+import { registryLockScript, secp256k1Dep } from '../account'
 import { registerCompactNFT } from '../aggregator'
 import { getCells, collectInputs, getLiveCell } from '../collector'
 import { FEE, RegistryTypeScript, RegistryTypeDep, CompactNFTTypeScript, CompactNFTTypeDep } from '../constants/'
@@ -10,7 +10,6 @@ import { append0x } from '../utils/hex'
 const ckb = new CKB(CKB_NODE_RPC)
 const REGISTRY_CELL_CAPACITY = BigInt(150) * BigInt(100000000)
 const COMPACT_NFT_CELL_CAPACITY = BigInt(130) * BigInt(100000000)
-
 
 const generateRegistryOutputs = async (
   inputCapacity: bigint,
@@ -52,7 +51,7 @@ const generateCompactNFTOutputs = async (
   outputs.push({
     capacity: `0x${changeCapacity.toString(16)}`,
     lock: registryLock,
-    type: null
+    type: null,
   })
   return outputs
 }
@@ -62,10 +61,7 @@ export const createRegistryCell = async () => {
   const liveCells = await getCells(lock)
   const { inputs, capacity } = collectInputs(liveCells, REGISTRY_CELL_CAPACITY)
   const registryTypeArgs = bytesToHex(blake160(serializeScript(lock)))
-  const outputs = await generateRegistryOutputs(
-    capacity,
-    { ...RegistryTypeScript, args: registryTypeArgs },
-  )
+  const outputs = await generateRegistryOutputs(capacity, { ...RegistryTypeScript, args: registryTypeArgs })
   const cellDeps = [await secp256k1Dep(), RegistryTypeDep]
   const rawTx = {
     version: '0x0',
@@ -83,7 +79,6 @@ export const createRegistryCell = async () => {
   console.info(`Creating registry cell tx has been sent with tx hash ${txHash}`)
   return txHash
 }
-
 
 export const updateRegistryCell = async (registryOutPoint: CKBComponents.OutPoint, compactNFTAddresses: string[]) => {
   const compactNFTLocks = compactNFTAddresses.map(address => addressToScript(address))
@@ -112,7 +107,7 @@ export const updateRegistryCell = async (registryOutPoint: CKBComponents.OutPoin
   const [registryRootHash, witnessData] = await registerCompactNFT(lockHashes)
   const registryCellData = `0x00${registryRootHash}`
 
-  const outputsData = outputs.map((_, i) => (i === 0 ? registryCellData : (i !== outputs.length - 1 ? "0x00" : "0x")))
+  const outputsData = outputs.map((_, i) => (i === 0 ? registryCellData : i !== outputs.length - 1 ? '0x00' : '0x'))
 
   const cellDeps = [await secp256k1Dep(), RegistryTypeDep, CompactNFTTypeDep]
 
@@ -125,7 +120,9 @@ export const updateRegistryCell = async (registryOutPoint: CKBComponents.OutPoin
     outputsData,
     witnesses: [],
   }
-  rawTx.witnesses = rawTx.inputs.map((_, i) => (i > 0 ? '0x' : { lock: '', inputType: append0x(witnessData), outputType: '' }))
+  rawTx.witnesses = rawTx.inputs.map((_, i) =>
+    i > 0 ? '0x' : { lock: '', inputType: append0x(witnessData), outputType: '' },
+  )
   const signedTx = ckb.signTransaction(CLASS_PRIVATE_KEY)(rawTx)
   let txHash = await ckb.rpc.sendTransaction(signedTx, 'passthrough')
   console.info(`Update registry cell tx has been sent with tx hash ${txHash}`)

@@ -1,6 +1,12 @@
 import CKB from '@nervosnetwork/ckb-sdk-core'
 import { addressToScript } from '@nervosnetwork/ckb-sdk-utils'
-import { CKB_NODE_RPC, CLASS_PRIVATE_KEY, SENDER_ADDRESS, RECEIVER_ADDRESS, REGISTRY_PRIVATE_KEY } from '../utils/config'
+import {
+  CKB_NODE_RPC,
+  CLASS_PRIVATE_KEY,
+  SENDER_ADDRESS,
+  RECEIVER_ADDRESS,
+  REGISTRY_PRIVATE_KEY,
+} from '../utils/config'
 
 const ckb = new CKB(CKB_NODE_RPC)
 
