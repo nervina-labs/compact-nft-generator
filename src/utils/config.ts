@@ -4,6 +4,8 @@ const CLASS_PRIVATE_KEY =
   process.env.CLASS_PRIVATE_KEY || '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 const REGISTRY_PRIVATE_KEY =
   process.env.REGISTRY_PRIVATE_KEY || '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+const COMPACT_NFT_PRIVATE_KEY =
+  process.env.COMPACT_NFT_PRIVATE_KEY || '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 const SENDER_ADDRESS = process.env.SENDER_ADDRESS || 'ckteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 const RECEIVER_ADDRESS =
   process.env.RECEIVER_ADDRESS || 'ckteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
@@ -15,6 +17,7 @@ const REGISTRY_AGGREGATOR_RPC = process.env.REGISTRY_AGGREGATOR_RPC || 'http://l
 export {
   CLASS_PRIVATE_KEY,
   REGISTRY_PRIVATE_KEY,
+  COMPACT_NFT_PRIVATE_KEY,
   CKB_NODE_RPC,
   CKB_NODE_INDEXER,
   SENDER_ADDRESS,

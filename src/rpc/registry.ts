@@ -9,7 +9,7 @@ import { append0x } from '../utils/hex'
 
 const ckb = new CKB(CKB_NODE_RPC)
 const REGISTRY_CELL_CAPACITY = BigInt(150) * BigInt(100000000)
-const COMPACT_NFT_CELL_CAPACITY = BigInt(130) * BigInt(100000000)
+const COMPACT_NFT_CELL_CAPACITY = BigInt(200) * BigInt(100000000)
 
 const generateRegistryOutputs = async (
   inputCapacity: bigint,
@@ -37,7 +37,7 @@ const generateCompactNFTOutputs = async (
 ): Promise<CKBComponents.CellOutput[]> => {
   const registryLock = await registryLockScript()
   let outputs: CKBComponents.CellOutput[] = compactNFTLocks.map(lock => {
-    const args = bytesToHex(blake160(serializeScript(lock)))
+    const args = append0x(scriptToHash(lock))
     const compactNFTType = { ...CompactNFTTypeScript, args }
     return {
       capacity: `0x${COMPACT_NFT_CELL_CAPACITY.toString(16)}`,
@@ -99,7 +99,6 @@ export const updateRegistryCell = async (registryOutPoint: CKBComponents.OutPoin
   let outputs = await generateCompactNFTOutputs(capacity, compactNFTLocks)
 
   const registryCell = await getLiveCell(registryOutPoint)
-  console.log(JSON.stringify(registryCell))
   outputs = [registryCell.output].concat(outputs)
   outputs.at(-1).capacity = `0x${(BigInt(outputs.at(-1).capacity) - FEE).toString(16)}`
 

@@ -1,14 +1,14 @@
 export const FEE = BigInt(1000)
 
 export const ClassTypeScript: CKBComponents.Script = {
-  codeHash: '0x095b8c0b4e51a45f953acd1fcd1e39489f2675b4bc94e7af27bb38958790e3fc',
+  codeHash: '0x4b488e0893b7aba6543282be74a58eee1fd8039c1b31cc2481257ad7db8259f5',
   hashType: 'type',
   args: '',
 }
 
 export const ClassTypeDep: CKBComponents.CellDep = {
-  outPoint: { txHash: '0x3ecf42927509645dec38667d557dd9ba20d0d07267d769983495c1b6b9c70cc4', index: '0x1' },
-  depType: 'code',
+  outPoint: { txHash: '0xb4c14c234c2fd387cd826fe86c59e9726ec31d13a46021d9cd048f9a2babe295', index: '0x0' },
+  depType: 'depGroup',
 }
 
 export const RegistryTypeScript: CKBComponents.Script = {
@@ -29,6 +29,6 @@ export const CompactNFTTypeScript: CKBComponents.Script = {
 }
 
 export const CompactNFTTypeDep: CKBComponents.CellDep = {
-  outPoint: { txHash: '0xf61190cf09c83a5c06d932edb983cd8d8fe50ec56972e622bf96a7ce5dfc4970', index: '0x0' },
+  outPoint: { txHash: '0x0a8c43334160702b8beccf922ea35e06f884eaa50731b5704a09edfbc5f02a62', index: '0x0' },
   depType: 'depGroup',
 }

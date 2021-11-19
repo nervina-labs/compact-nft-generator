@@ -1,5 +1,5 @@
 import { createRegistryCell, updateRegistryCell } from '../rpc/registry'
-import { SENDER_ADDRESS } from '../utils/config'
+import { RECEIVER_ADDRESS, SENDER_ADDRESS } from '../utils/config'
 
 const run = async () => {
   // await createRegistryCell()

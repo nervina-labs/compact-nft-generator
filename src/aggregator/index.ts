@@ -1,4 +1,3 @@
-import { serializeScript } from '@nervosnetwork/ckb-sdk-utils'
 import fetch from 'node-fetch'
 import { REGISTRY_AGGREGATOR_RPC } from '../utils/config'
 import { toCamelcase } from '../utils/util'
