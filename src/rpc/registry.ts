@@ -5,7 +5,7 @@ import { registerCompactNFT } from '../aggregator'
 import { getCells, collectInputs, getLiveCell } from '../collector'
 import { FEE, RegistryTypeScript, RegistryTypeDep, CompactNFTTypeScript, CompactNFTTypeDep } from '../constants/'
 import { CKB_NODE_RPC, CLASS_PRIVATE_KEY, SENDER_ADDRESS } from '../utils/config'
-import { append0x } from '../utils/hex'
+import { append0x, remove0x } from '../utils/hex'
 
 const ckb = new CKB(CKB_NODE_RPC)
 const REGISTRY_CELL_CAPACITY = BigInt(150) * BigInt(100000000)
@@ -37,7 +37,7 @@ const generateCompactNFTOutputs = async (
 ): Promise<CKBComponents.CellOutput[]> => {
   const registryLock = await registryLockScript()
   let outputs: CKBComponents.CellOutput[] = compactNFTLocks.map(lock => {
-    const args = append0x(scriptToHash(lock))
+    const args = append0x(remove0x(scriptToHash(lock)).slice(0, 40))
     const compactNFTType = { ...CompactNFTTypeScript, args }
     return {
       capacity: `0x${COMPACT_NFT_CELL_CAPACITY.toString(16)}`,
@@ -123,6 +123,7 @@ export const updateRegistryCell = async (registryOutPoint: CKBComponents.OutPoin
     i > 0 ? '0x' : { lock: '', inputType: append0x(witnessData), outputType: '' },
   )
   const signedTx = ckb.signTransaction(CLASS_PRIVATE_KEY)(rawTx)
+  console.log(JSON.stringify(signedTx))
   let txHash = await ckb.rpc.sendTransaction(signedTx, 'passthrough')
   console.info(`Update registry cell tx has been sent with tx hash ${txHash}`)
   return txHash
