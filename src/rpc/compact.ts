@@ -1,9 +1,8 @@
 import CKB from '@nervosnetwork/ckb-sdk-core'
-import { serializeOutPoint } from '@nervosnetwork/ckb-sdk-utils'
 import { secp256k1Dep } from '../account'
 import { getLiveCell } from '../collector'
 import { FEE, CompactNFTTypeDep } from '../constants'
-import { CKB_NODE_RPC, COMPACT_NFT_PRIVATE_KEY } from '../utils/config'
+import { CKB_NODE_RPC, COMPACT_NFT_PRIVATE_KEY, RECEIVER_COMPACT_NFT_PRIVATE_KEY } from '../utils/config'
 
 const ckb = new CKB(CKB_NODE_RPC)
 
@@ -48,10 +47,7 @@ export const claimCompactNFTFromMint = async (
   return txHash
 }
 
-
-export const withdrawCompactNFT = async (
-  compactOutPoint: CKBComponents.OutPoint,
-) => {
+export const withdrawCompactNFT = async (compactOutPoint: CKBComponents.OutPoint) => {
   const inputs = [
     {
       previousOutput: compactOutPoint,
@@ -82,6 +78,48 @@ export const withdrawCompactNFT = async (
     i > 0 ? '0x' : { lock: '', inputType: `0x02${witnessData}`, outputType: '' },
   )
   const signedTx = ckb.signTransaction(COMPACT_NFT_PRIVATE_KEY)(rawTx)
+  console.log(JSON.stringify(signedTx))
+  let txHash = await ckb.rpc.sendTransaction(signedTx, 'passthrough')
+  console.info(`Claim compact nft from mint tx has been sent with tx hash ${txHash}`)
+  return txHash
+}
+
+
+export const claimCompactNFT = async (
+  compactOutPoint: CKBComponents.OutPoint,
+  withdrawalOutPoint: CKBComponents.OutPoint,
+) => {
+  const inputs = [
+    {
+      previousOutput: compactOutPoint,
+      since: '0x0',
+    },
+  ]
+
+  const compactNFTCell = await getLiveCell(compactOutPoint)
+  const outputs = [compactNFTCell.output]
+  outputs[0].capacity = `0x${(BigInt(outputs[0].capacity) - FEE).toString(16)}`
+
+  const outputsData = ['0x00c588ac49286d3de8f738e4c4d61669078ff8ed617fe86d201022a5df4dfc46cb']
+  const witnessData =
+    '020100001c0000003d0000004b00000084000000a8000000b300000001000000013939ecec56db8161b6308c84d6f5f9f12d00d1f00000000300000002010000000505050505050505000001000000033939ecec56db8161b6308c84d6f5f9f12d00d1f00000000300000002a32cd26079d351ae8953d511bd322544fc2ba94a0000000001000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff070000004c4fff4c4fff484b0000004c4f194c4f19484fe551ff0c8f4a64e8ecad6b62806799a0ff51b449a69afb6bed0a10c93d746da54a4fb4cb8d04b805790429388958cf4c3f60caddae39b57014805172e97236c92a2762'
+
+  const withdrawalCellDep: CKBComponents.CellDep = { outPoint: withdrawalOutPoint, depType: 'code' }
+  const cellDeps = [withdrawalCellDep, await secp256k1Dep(), CompactNFTTypeDep]
+
+  const rawTx = {
+    version: '0x0',
+    cellDeps,
+    headerDeps: [],
+    inputs,
+    outputs,
+    outputsData,
+    witnesses: [],
+  }
+  rawTx.witnesses = rawTx.inputs.map((_, i) =>
+    i > 0 ? '0x' : { lock: '', inputType: `0x03${witnessData}`, outputType: '' },
+  )
+  const signedTx = ckb.signTransaction(RECEIVER_COMPACT_NFT_PRIVATE_KEY)(rawTx)
   console.log(JSON.stringify(signedTx))
   let txHash = await ckb.rpc.sendTransaction(signedTx, 'passthrough')
   console.info(`Claim compact nft from mint tx has been sent with tx hash ${txHash}`)

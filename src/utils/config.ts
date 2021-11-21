@@ -6,6 +6,8 @@ const REGISTRY_PRIVATE_KEY =
   process.env.REGISTRY_PRIVATE_KEY || '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 const COMPACT_NFT_PRIVATE_KEY =
   process.env.COMPACT_NFT_PRIVATE_KEY || '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+const RECEIVER_COMPACT_NFT_PRIVATE_KEY =
+  process.env.RECEIVER_COMPACT_NFT_PRIVATE_KEY || '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 const SENDER_ADDRESS = process.env.SENDER_ADDRESS || 'ckteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 const RECEIVER_ADDRESS =
   process.env.RECEIVER_ADDRESS || 'ckteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
@@ -18,6 +20,7 @@ export {
   CLASS_PRIVATE_KEY,
   REGISTRY_PRIVATE_KEY,
   COMPACT_NFT_PRIVATE_KEY,
+  RECEIVER_COMPACT_NFT_PRIVATE_KEY,
   CKB_NODE_RPC,
   CKB_NODE_INDEXER,
   SENDER_ADDRESS,

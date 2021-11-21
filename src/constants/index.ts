@@ -29,6 +29,6 @@ export const CompactNFTTypeScript: CKBComponents.Script = {
 }
 
 export const CompactNFTTypeDep: CKBComponents.CellDep = {
-  outPoint: { txHash: '0x86bb076d74ea36215516863d8815c0fa682f13e1c13c2b3a475a16b6ea280a7e', index: '0x0' },
+  outPoint: { txHash: '0xa5023523c1c586600f6986711584952c2021fa182de8474df2998b2317f33f7e', index: '0x0' },
   depType: 'depGroup',
 }
