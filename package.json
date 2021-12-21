@@ -1,13 +1,13 @@
 {
   "name": "cota-generator",
   "version": "1.0.0",
-  "description": "The generator of compact-NFT",
+  "description": "The generator of CoTA",
   "author": "dev@nervina.io",
   "license": "MIT",
   "scripts": {
     "start": "ts-node src/index.ts",
     "start:registry": "ts-node src/generator/registry.ts",
-    "start:compact": "ts-node src/generator/compact.ts",
+    "start:cota": "ts-node src/generator/cota.ts",
     "lint": "eslint src/**/*.ts --fix",
     "prepare": "husky install"
   },

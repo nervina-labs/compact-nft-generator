@@ -16,6 +16,7 @@ export const getCells = async (lock: CKBComponents.Script, type?: CKBComponents.
         },
       }
     : {
+        script: null,
         output_data_len_range: ['0x0', '0x1'],
       }
   let payload = {

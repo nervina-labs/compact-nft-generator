@@ -2,14 +2,16 @@ import fetch from 'node-fetch'
 import { REGISTRY_AGGREGATOR_RPC } from '../utils/config'
 import { toCamelcase } from '../utils/util'
 
-export const registerCotaCells = async (lockHashes: CKBComponents.Hash[]): Promise<string[]> => {
+export const registerCotaCells = async (
+  lockHashes: CKBComponents.Hash[],
+): Promise<{ smtRootHash: string; registrySmtEntries: string }> => {
   let payload = {
     id: 1,
     jsonrpc: '2.0',
     method: 'register_cota_cells',
     params: lockHashes,
   }
-  const body = JSON.stringify(payload, null, '  ')
+  const body = JSON.stringify(payload, null, '')
   try {
     let res = await fetch(REGISTRY_AGGREGATOR_RPC, {
       method: 'POST',

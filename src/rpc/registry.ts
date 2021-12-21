@@ -121,8 +121,8 @@ export const updateRegistryCell = async (registryOutPoint: CKBComponents.OutPoin
   outputs.at(-1).capacity = `0x${(BigInt(outputs.at(-1).capacity) - FEE).toString(16)}`
 
   const lockHashes = cotaLocks.map(lock => scriptToHash(lock))
-  const [registryRootHash, witnessData] = await registerCotaCells(lockHashes)
-  const registryCellData = `0x00${registryRootHash}`
+  const { smtRootHash, registrySmtEntries } = await registerCotaCells(lockHashes)
+  const registryCellData = `0x00${smtRootHash}`
 
   const outputsData = outputs.map((_, i) => (i === 0 ? registryCellData : i !== outputs.length - 1 ? '0x00' : '0x'))
 
@@ -138,7 +138,7 @@ export const updateRegistryCell = async (registryOutPoint: CKBComponents.OutPoin
     witnesses: [],
   }
   rawTx.witnesses = rawTx.inputs.map((_, i) =>
-    i > 0 ? '0x' : { lock: '', inputType: append0x(witnessData), outputType: '' },
+    i > 0 ? '0x' : { lock: '', inputType: append0x(registrySmtEntries), outputType: '' },
   )
   const signedTx = ckb.signTransaction(REGISTRY_PRIVATE_KEY)(rawTx)
   console.log(JSON.stringify(signedTx))
