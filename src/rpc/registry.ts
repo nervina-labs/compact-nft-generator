@@ -1,11 +1,21 @@
 import CKB from '@nervosnetwork/ckb-sdk-core'
-import { bytesToHex, serializeScript, blake160, addressToScript, scriptToHash } from '@nervosnetwork/ckb-sdk-utils'
+import {
+  bytesToHex,
+  serializeScript,
+  blake160,
+  addressToScript,
+  scriptToHash,
+  hexToBytes,
+  serializeInput,
+  PERSONAL,
+} from '@nervosnetwork/ckb-sdk-utils'
+import blake2b from '@nervosnetwork/ckb-sdk-utils/lib/crypto/blake2b'
 import { registryLockScript, secp256k1Dep } from '../account'
-import { registerCotaCells } from '../aggregator'
+import { registerCotaCells } from '../aggregator/registry'
 import { getCells, collectInputs, getLiveCell } from '../collector'
 import { FEE, RegistryTypeScript, RegistryTypeDep, CotaTypeScript, CotaTypeDep } from '../constants/'
 import { CKB_NODE_RPC, REGISTRY_PRIVATE_KEY } from '../utils/config'
-import { append0x, remove0x } from '../utils/hex'
+import { append0x, remove0x, u64ToLe } from '../utils/hex'
 
 const ckb = new CKB(CKB_NODE_RPC)
 const REGISTRY_CELL_CAPACITY = BigInt(150) * BigInt(100000000)
@@ -56,11 +66,19 @@ const generateCotaOutputs = async (
   return outputs
 }
 
+const generateRegistryTypeArgs = (firstInput: CKBComponents.CellInput, firstOutputIndex: bigint) => {
+  const input = hexToBytes(serializeInput(firstInput))
+  const s = blake2b(32, null, null, PERSONAL)
+  s.update(input)
+  s.update(hexToBytes(`0x${u64ToLe(firstOutputIndex)}`))
+  return `0x${s.digest('hex').slice(0, 40)}`
+}
+
 export const createRegistryCell = async () => {
   const lock = await registryLockScript()
   const liveCells = await getCells(lock)
   const { inputs, capacity } = collectInputs(liveCells, REGISTRY_CELL_CAPACITY)
-  const registryTypeArgs = bytesToHex(blake160(serializeScript(lock)))
+  const registryTypeArgs = generateRegistryTypeArgs(inputs[0], BigInt(0))
   const outputs = await generateRegistryOutputs(capacity, { ...RegistryTypeScript, args: registryTypeArgs })
   const cellDeps = [await secp256k1Dep(), RegistryTypeDep]
   const rawTx = {

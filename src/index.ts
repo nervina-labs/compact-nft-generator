@@ -1,5 +1,5 @@
 import { addressToScript, scriptToHash, serializeScript } from '@nervosnetwork/ckb-sdk-utils'
-import { registerCotaCells } from './aggregator'
+import { registerCotaCells } from './aggregator/registry'
 import { getCells } from './collector'
 import { SENDER_ADDRESS } from './utils/config'
 

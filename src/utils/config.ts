@@ -4,7 +4,7 @@ const REGISTRY_PRIVATE_KEY =
   process.env.REGISTRY_PRIVATE_KEY || '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 const SENDER_COTA_PRIVATE_KEY =
   process.env.SENDER_COTA_PRIVATE_KEY || '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-  const RECEIVER_COTA_PRIVATE_KEY =
+const RECEIVER_COTA_PRIVATE_KEY =
   process.env.RECEIVER_COTA_PRIVATE_KEY || '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 const SENDER_ADDRESS = process.env.SENDER_ADDRESS || 'ckteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 const RECEIVER_ADDRESS =
