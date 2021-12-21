@@ -1,10 +1,10 @@
 import CKB from '@nervosnetwork/ckb-sdk-core'
 import { bytesToHex, serializeScript, blake160, addressToScript, scriptToHash } from '@nervosnetwork/ckb-sdk-utils'
 import { registryLockScript, secp256k1Dep } from '../account'
-import { registerCompactNFT } from '../aggregator'
+import { registerCotaCells } from '../aggregator'
 import { getCells, collectInputs, getLiveCell } from '../collector'
-import { FEE, RegistryTypeScript, RegistryTypeDep, CompactNFTTypeScript, CompactNFTTypeDep } from '../constants/'
-import { CKB_NODE_RPC, CLASS_PRIVATE_KEY, SENDER_ADDRESS } from '../utils/config'
+import { FEE, RegistryTypeScript, RegistryTypeDep, CotaTypeScript, CotaTypeDep } from '../constants/'
+import { CKB_NODE_RPC, CLASS_PRIVATE_KEY } from '../utils/config'
 import { append0x, remove0x } from '../utils/hex'
 
 const ckb = new CKB(CKB_NODE_RPC)
@@ -38,7 +38,7 @@ const generateCompactNFTOutputs = async (
   const registryLock = await registryLockScript()
   let outputs: CKBComponents.CellOutput[] = compactNFTLocks.map(lock => {
     const args = append0x(remove0x(scriptToHash(lock)).slice(0, 40))
-    const compactNFTType = { ...CompactNFTTypeScript, args }
+    const compactNFTType = { ...CotaTypeScript, args }
     return {
       capacity: `0x${COMPACT_NFT_CELL_CAPACITY.toString(16)}`,
       lock,
@@ -103,12 +103,12 @@ export const updateRegistryCell = async (registryOutPoint: CKBComponents.OutPoin
   outputs.at(-1).capacity = `0x${(BigInt(outputs.at(-1).capacity) - FEE).toString(16)}`
 
   const lockHashes = compactNFTLocks.map(lock => scriptToHash(lock))
-  const [registryRootHash, witnessData] = await registerCompactNFT(lockHashes)
+  const [registryRootHash, witnessData] = await registerCotaCells(lockHashes)
   const registryCellData = `0x00${registryRootHash}`
 
   const outputsData = outputs.map((_, i) => (i === 0 ? registryCellData : i !== outputs.length - 1 ? '0x00' : '0x'))
 
-  const cellDeps = [await secp256k1Dep(), RegistryTypeDep, CompactNFTTypeDep]
+  const cellDeps = [await secp256k1Dep(), RegistryTypeDep, CotaTypeDep]
 
   const rawTx = {
     version: '0x0',

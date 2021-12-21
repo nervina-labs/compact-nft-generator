@@ -1,34 +1,23 @@
 export const FEE = BigInt(1000)
 
-export const ClassTypeScript: CKBComponents.Script = {
-  codeHash: '0x4b488e0893b7aba6543282be74a58eee1fd8039c1b31cc2481257ad7db8259f5',
-  hashType: 'type',
-  args: '',
-}
-
-export const ClassTypeDep: CKBComponents.CellDep = {
-  outPoint: { txHash: '0xb4c14c234c2fd387cd826fe86c59e9726ec31d13a46021d9cd048f9a2babe295', index: '0x0' },
-  depType: 'depGroup',
-}
-
 export const RegistryTypeScript: CKBComponents.Script = {
-  codeHash: '0x3a6897ab78ad10d028d0c5ef375545e66bfdffd01f3a369b5b07906078e04f6d',
+  codeHash: '0x3840d6b71a291f95430a24274206aa5b636319f17c955e780011c97d986070e3',
   hashType: 'type',
   args: '',
 }
 
 export const RegistryTypeDep: CKBComponents.CellDep = {
-  outPoint: { txHash: '0x4410efbdfb83c58198a10eae621a3169c4f8f776cb4c2dd61b69947b1f4b922a', index: '0x0' },
+  outPoint: { txHash: '0x349d6ffa2b7d11238365b592bf93af48f7fff76542ec3b025d35f26ca6927654', index: '0x0' },
   depType: 'depGroup',
 }
 
-export const CompactNFTTypeScript: CKBComponents.Script = {
-  codeHash: '0xdca728b2220d4026ae4295915ca3dfb586bdf75dab7bf14b20373899588d8689',
+export const CotaTypeScript: CKBComponents.Script = {
+  codeHash: '0x064b099b863a6cc7e9e6477975fb90dbd1ca698cc8b2daae5ef3365769204d97',
   hashType: 'type',
   args: '',
 }
 
-export const CompactNFTTypeDep: CKBComponents.CellDep = {
-  outPoint: { txHash: '0xa5023523c1c586600f6986711584952c2021fa182de8474df2998b2317f33f7e', index: '0x0' },
+export const CotaTypeDep: CKBComponents.CellDep = {
+  outPoint: { txHash: '0xe4e85beab47be030c8d858ced55ff5cb46997f155b1151405d08e6cd6ae30bb1', index: '0x0' },
   depType: 'depGroup',
 }

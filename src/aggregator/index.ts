@@ -2,7 +2,7 @@ import fetch from 'node-fetch'
 import { REGISTRY_AGGREGATOR_RPC } from '../utils/config'
 import { toCamelcase } from '../utils/util'
 
-export const registerCompactNFT = async (lockHashes: CKBComponents.Hash[]): Promise<string[]> => {
+export const registerCotaCells = async (lockHashes: CKBComponents.Hash[]): Promise<string[]> => {
   let payload = {
     id: 1,
     jsonrpc: '2.0',
