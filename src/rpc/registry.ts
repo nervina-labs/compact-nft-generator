@@ -4,12 +4,12 @@ import { registryLockScript, secp256k1Dep } from '../account'
 import { registerCotaCells } from '../aggregator'
 import { getCells, collectInputs, getLiveCell } from '../collector'
 import { FEE, RegistryTypeScript, RegistryTypeDep, CotaTypeScript, CotaTypeDep } from '../constants/'
-import { CKB_NODE_RPC, CLASS_PRIVATE_KEY } from '../utils/config'
+import { CKB_NODE_RPC, REGISTRY_PRIVATE_KEY } from '../utils/config'
 import { append0x, remove0x } from '../utils/hex'
 
 const ckb = new CKB(CKB_NODE_RPC)
 const REGISTRY_CELL_CAPACITY = BigInt(150) * BigInt(100000000)
-const COMPACT_NFT_CELL_CAPACITY = BigInt(200) * BigInt(100000000)
+const COTA_CELL_CAPACITY = BigInt(200) * BigInt(100000000)
 
 const generateRegistryOutputs = async (
   inputCapacity: bigint,
@@ -31,23 +31,23 @@ const generateRegistryOutputs = async (
   return outputs
 }
 
-const generateCompactNFTOutputs = async (
+const generateCotaOutputs = async (
   inputCapacity: bigint,
-  compactNFTLocks: CKBComponents.Script[],
+  cotaLocks: CKBComponents.Script[],
 ): Promise<CKBComponents.CellOutput[]> => {
   const registryLock = await registryLockScript()
-  let outputs: CKBComponents.CellOutput[] = compactNFTLocks.map(lock => {
+  let outputs: CKBComponents.CellOutput[] = cotaLocks.map(lock => {
     const args = append0x(remove0x(scriptToHash(lock)).slice(0, 40))
-    const compactNFTType = { ...CotaTypeScript, args }
+    const cotaType = { ...CotaTypeScript, args }
     return {
-      capacity: `0x${COMPACT_NFT_CELL_CAPACITY.toString(16)}`,
+      capacity: `0x${COTA_CELL_CAPACITY.toString(16)}`,
       lock,
-      type: compactNFTType,
+      type: cotaType,
     }
   })
 
-  const compactNFTLength = BigInt(compactNFTLocks.length)
-  const changeCapacity = inputCapacity - FEE - COMPACT_NFT_CELL_CAPACITY * compactNFTLength
+  const cotaCellsLength = BigInt(cotaLocks.length)
+  const changeCapacity = inputCapacity - FEE - COTA_CELL_CAPACITY * cotaCellsLength
   outputs.push({
     capacity: `0x${changeCapacity.toString(16)}`,
     lock: registryLock,
@@ -73,20 +73,20 @@ export const createRegistryCell = async () => {
     witnesses: [],
   }
   rawTx.witnesses = rawTx.inputs.map((_, i) => (i > 0 ? '0x' : { lock: '', inputType: '', outputType: '' }))
-  const signedTx = ckb.signTransaction(CLASS_PRIVATE_KEY)(rawTx)
+  const signedTx = ckb.signTransaction(REGISTRY_PRIVATE_KEY)(rawTx)
   console.info(JSON.stringify(signedTx))
   let txHash = await ckb.rpc.sendTransaction(signedTx, 'passthrough')
   console.info(`Creating registry cell tx has been sent with tx hash ${txHash}`)
   return txHash
 }
 
-export const updateRegistryCell = async (registryOutPoint: CKBComponents.OutPoint, compactNFTAddresses: string[]) => {
-  const compactNFTLocks = compactNFTAddresses.map(address => addressToScript(address))
-  const compactNFTLength = BigInt(compactNFTLocks.length)
+export const updateRegistryCell = async (registryOutPoint: CKBComponents.OutPoint, cotaAddresses: string[]) => {
+  const cotaLocks = cotaAddresses.map(address => addressToScript(address))
+  const cotaCount = BigInt(cotaLocks.length)
 
   const registryLock = await registryLockScript()
   const liveCells = await getCells(registryLock)
-  const { inputs: normalInputs, capacity } = collectInputs(liveCells, COMPACT_NFT_CELL_CAPACITY * compactNFTLength)
+  const { inputs: normalInputs, capacity } = collectInputs(liveCells, COTA_CELL_CAPACITY * cotaCount)
 
   let inputs = [
     {
@@ -96,13 +96,13 @@ export const updateRegistryCell = async (registryOutPoint: CKBComponents.OutPoin
   ]
   inputs = inputs.concat(normalInputs)
 
-  let outputs = await generateCompactNFTOutputs(capacity, compactNFTLocks)
+  let outputs = await generateCotaOutputs(capacity, cotaLocks)
 
   const registryCell = await getLiveCell(registryOutPoint)
   outputs = [registryCell.output].concat(outputs)
   outputs.at(-1).capacity = `0x${(BigInt(outputs.at(-1).capacity) - FEE).toString(16)}`
 
-  const lockHashes = compactNFTLocks.map(lock => scriptToHash(lock))
+  const lockHashes = cotaLocks.map(lock => scriptToHash(lock))
   const [registryRootHash, witnessData] = await registerCotaCells(lockHashes)
   const registryCellData = `0x00${registryRootHash}`
 
@@ -122,7 +122,7 @@ export const updateRegistryCell = async (registryOutPoint: CKBComponents.OutPoin
   rawTx.witnesses = rawTx.inputs.map((_, i) =>
     i > 0 ? '0x' : { lock: '', inputType: append0x(witnessData), outputType: '' },
   )
-  const signedTx = ckb.signTransaction(CLASS_PRIVATE_KEY)(rawTx)
+  const signedTx = ckb.signTransaction(REGISTRY_PRIVATE_KEY)(rawTx)
   console.log(JSON.stringify(signedTx))
   let txHash = await ckb.rpc.sendTransaction(signedTx, 'passthrough')
   console.info(`Update registry cell tx has been sent with tx hash ${txHash}`)

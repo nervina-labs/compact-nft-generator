@@ -7,8 +7,8 @@ const run = async () => {
     txHash: '0xb30aec8032f7ad2aa55cf198238bd41c4a735c4767640fa50b45fc9a951f892b',
     index: '0x0',
   }
-  const compactNFTAddresses: string[] = ['ckt1qyqgec0t3em4tkn2hm5ce8ltqclltfgfs39q4vg5h7']
-  await updateRegistryCell(registryOutPoint, compactNFTAddresses)
+  const cotaAddresses: string[] = ['ckt1qyqgec0t3em4tkn2hm5ce8ltqclltfgfs39q4vg5h7']
+  await updateRegistryCell(registryOutPoint, cotaAddresses)
 }
 
 run()

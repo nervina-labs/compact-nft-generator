@@ -6,7 +6,7 @@ export const registerCotaCells = async (lockHashes: CKBComponents.Hash[]): Promi
   let payload = {
     id: 1,
     jsonrpc: '2.0',
-    method: 'register_compact_nft',
+    method: 'register_cota_cells',
     params: lockHashes,
   }
   const body = JSON.stringify(payload, null, '  ')
