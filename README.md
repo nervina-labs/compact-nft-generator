@@ -1,2 +1,2 @@
-# compact-nft-generator
-The generator of compact-NFT
+# cota-generator
+The generator of [CoTA](https://github.com/nervina-labs/ckb-cota-scripts)
