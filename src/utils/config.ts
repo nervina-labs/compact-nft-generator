@@ -13,6 +13,7 @@ const RECEIVER_ADDRESS =
 const CKB_NODE_RPC = process.env.CKB_NODE_RPC || 'http://localhost:8114'
 const CKB_NODE_INDEXER = process.env.CKB_NODE_INDEXER || 'http://localhost:8116'
 const REGISTRY_AGGREGATOR_RPC = process.env.REGISTRY_AGGREGATOR_RPC || 'http://localhost:3030'
+const COTA_AGGREGATOR_RPC = process.env.COTA_AGGREGATOR_RPC || 'http://localhost:3030'
 
 export {
   REGISTRY_PRIVATE_KEY,
@@ -23,4 +24,5 @@ export {
   SENDER_ADDRESS,
   RECEIVER_ADDRESS,
   REGISTRY_AGGREGATOR_RPC,
+  COTA_AGGREGATOR_RPC,
 }

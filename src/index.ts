@@ -5,15 +5,12 @@ import { CKB_NODE_RPC } from './utils/config'
 import { append0x } from './utils/hex'
 
 const run = async () => {
-  const ckb = new CKB(CKB_NODE_RPC)
-  const lockArgs = await generateLockArgs(append0x("cdecc6bc9858fa707330c606ef47e605be859d26708c7b25f0875cbc1f0896ce"))
-  const dep = (await ckb.loadDeps()).secp256k1Dep
   const lock = {
-    codeHash: dep.codeHash,
-    hashType: dep.hashType,
-    args: lockArgs,
-  }
-  const address = scriptToAddress(lock, false)
+    codeHash: "0x614d40a86e1b29a8f4d8d93b9f3b390bf740803fa19a69f1c95716e029ea09b3",
+    hashType: "type",
+    args: "0x6EF3D502A52A4B1258C511DD9EF84D6FDBF5E9CAEADD55BA52A7BE7B76DDD17C",
+  } as CKBComponents.Script
+  const address = scriptToAddress(lock)
   console.log(address)
 }
 
