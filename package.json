@@ -7,7 +7,8 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "start:registry": "ts-node src/generator/registry.ts",
-    "start:cota": "ts-node src/generator/cota.ts",
+    "start:define": "ts-node src/generator/define.ts",
+    "start:claim": "ts-node src/generator/claim.ts",
     "lint": "eslint src/**/*.ts --fix",
     "prepare": "husky install"
   },
@@ -15,6 +16,7 @@
     "@types/node": "^16.11.7",
     "@typescript-eslint/parser": "^5.8.0",
     "babel-eslint": "^10.1.0",
+    "convert-keys": "^1.3.4",
     "dotenv": "^10.0.0",
     "eslint": "^7.27.0",
     "eslint-config-prettier": "^8.3.0",

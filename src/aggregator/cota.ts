@@ -1,6 +1,6 @@
 import fetch from 'node-fetch'
 import { COTA_AGGREGATOR_RPC } from '../utils/config'
-import { toCamelcase } from '../utils/util'
+import { toCamelcase, toSnakeCase } from '../utils/util'
 
 export interface DefineReq {
   lockHash: CKBComponents.Hash
@@ -16,11 +16,12 @@ export interface DefineResp {
 }
 
 export const generateDefineCotaSmt = async (define: DefineReq): Promise<DefineResp> => {
+  console.log(toSnakeCase(define))
   let payload = {
     id: 1,
     jsonrpc: '2.0',
     method: 'generate_define_cota_smt',
-    params: JSON.stringify(define),
+    params: toSnakeCase(define),
   }
   const body = JSON.stringify(payload, null, '')
   try {
@@ -32,7 +33,12 @@ export const generateDefineCotaSmt = async (define: DefineReq): Promise<DefineRe
       body,
     })
     const response = await res.json()
-    return toCamelcase(response.result)
+    if (response.error) {
+      console.error(response)
+    } else {
+      console.log(JSON.stringify(response))
+      return toCamelcase(response.result)
+    }
   } catch (error) {
     console.error('error', error)
   }

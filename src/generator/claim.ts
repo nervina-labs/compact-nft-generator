@@ -1,12 +1,6 @@
-import { claimCotaNFT, withdrawCotaNFT } from '../rpc/cota'
+import { claimCotaNFT, defineCotaNFT, withdrawCotaNFT } from '../rpc/cota'
 
 const run = async () => {
-  // const cotaOutPoint: CKBComponents.OutPoint = {
-  //   txHash: '0xbfa0d4d9e7b3a64bae320eafa32cd26079d351ae8953d511bd322544fc2ba94a',
-  //   index: '0x0',
-  // }
-  // await withdrawCotaNFT(cotaOutPoint)
-
   const cotaOutPoint: CKBComponents.OutPoint = {
     txHash: '0x7a5a3faa6957b03869ec269357a1e994f3802d3a06e33f4627c4e3bbbb04e3de',
     index: '0x1',
