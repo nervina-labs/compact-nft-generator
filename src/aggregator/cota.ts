@@ -1,27 +1,15 @@
 import fetch from 'node-fetch'
 import { COTA_AGGREGATOR_RPC } from '../utils/config'
 import { toCamelcase, toSnakeCase } from '../utils/util'
+import { DefineReq, DefineResp, MintReq, MintResp, SmtReq, SmtResp } from './types'
 
-export interface DefineReq {
-  lockHash: CKBComponents.Hash
-  cotaId: Hex
-  total: Hex
-  issued: Hex
-  configure: Hex
-}
-
-export interface DefineResp {
-  smtRootHash: Hex
-  defineSmtEntries: Hex
-}
-
-export const generateDefineCotaSmt = async (define: DefineReq): Promise<DefineResp> => {
-  console.log(toSnakeCase(define))
+export const generateCotaSmt = async (method: string, req: SmtReq): Promise<SmtResp> => {
+  console.log(JSON.stringify(toSnakeCase(req)))
   let payload = {
     id: 1,
     jsonrpc: '2.0',
-    method: 'generate_define_cota_smt',
-    params: toSnakeCase(define),
+    method,
+    params: toSnakeCase(req),
   }
   const body = JSON.stringify(payload, null, '')
   try {
@@ -42,4 +30,12 @@ export const generateDefineCotaSmt = async (define: DefineReq): Promise<DefineRe
   } catch (error) {
     console.error('error', error)
   }
+}
+
+export const generateDefineCotaSmt = async (define: DefineReq): Promise<DefineResp> => {
+  return (await generateCotaSmt('generate_define_cota_smt', define)) as Promise<DefineResp>
+}
+
+export const generateMintCotaSmt = async (define: MintReq): Promise<MintResp> => {
+  return (await generateCotaSmt('generate_mint_cota_smt', define)) as Promise<MintResp>
 }
