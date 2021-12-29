@@ -1,13 +1,26 @@
 import CKB from '@nervosnetwork/ckb-sdk-core'
-import { addressToScript, hexToBytes, PERSONAL, scriptToHash, serializeInput, serializeOutPoint, serializeScript } from '@nervosnetwork/ckb-sdk-utils'
+import {
+  addressToScript,
+  hexToBytes,
+  PERSONAL,
+  scriptToHash,
+  serializeInput,
+  serializeOutPoint,
+  serializeScript,
+} from '@nervosnetwork/ckb-sdk-utils'
 import blake2b from '@nervosnetwork/ckb-sdk-utils/lib/crypto/blake2b'
-import { serialize } from 'v8'
 import { secp256k1Dep } from '../account'
-import { generateDefineCotaSmt, generateMintCotaSmt } from '../aggregator/cota'
-import { DefineReq, MintReq, MintResp } from '../aggregator/types'
+import { generateClaimCotaSmt, generateDefineCotaSmt, generateMintCotaSmt } from '../aggregator/cota'
+import { ClaimReq, DefineReq, MintReq, MintResp } from '../aggregator/types'
 import { getLiveCell } from '../collector'
 import { FEE, CotaTypeDep } from '../constants'
-import { CKB_NODE_RPC, SENDER_COTA_PRIVATE_KEY, RECEIVER_COTA_PRIVATE_KEY, SENDER_ADDRESS, RECEIVER_ADDRESS } from '../utils/config'
+import {
+  CKB_NODE_RPC,
+  SENDER_COTA_PRIVATE_KEY,
+  RECEIVER_COTA_PRIVATE_KEY,
+  SENDER_ADDRESS,
+  RECEIVER_ADDRESS,
+} from '../utils/config'
 import { u8ToHex } from '../utils/hex'
 
 const ckb = new CKB(CKB_NODE_RPC)
@@ -84,18 +97,18 @@ export const mintCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
     outPoint: serializeOutPoint(cotaOutPoint),
     withdrawals: [
       {
-        tokenIndex: "0x00000000",
-        state: "0x00",
-        characteristic: "0x0505050505050505050505050505050505050505",
+        tokenIndex: '0x00000000',
+        state: '0x00',
+        characteristic: '0x0505050505050505050505050505050505050505',
         toLockScript: serializeScript(toLockScript),
       },
       {
-        tokenIndex: "0x00000001",
-        state: "0x00",
-        characteristic: "0x0505050505050505050505050505050505050505",
+        tokenIndex: '0x00000001',
+        state: '0x00',
+        characteristic: '0x0505050505050505050505050505050505050505',
         toLockScript: serializeScript(toLockScript),
-      }
-    ]
+      },
+    ],
   }
 
   const { smtRootHash, mintSmtEntry } = await generateMintCotaSmt(mintReq)
@@ -174,9 +187,23 @@ export const claimCotaNFT = async (
   const outputs = [cotaCell.output]
   outputs[0].capacity = `0x${(BigInt(outputs[0].capacity) - FEE).toString(16)}`
 
-  const outputsData = ['0x00c588ac49286d3de8f738e4c4d61669078ff8ed617fe86d201022a5df4dfc46cb']
-  const witnessData =
-    '020100001c0000003d0000004b00000084000000a8000000b300000001000000013939ecec56db8161b6308c84d6f5f9f12d00d1f00000000300000002010000000505050505050505000001000000033939ecec56db8161b6308c84d6f5f9f12d00d1f00000000300000002a32cd26079d351ae8953d511bd322544fc2ba94a0000000001000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff070000004c4fff4c4fff484b0000004c4f194c4f19484fe551ff0c8f4a64e8ecad6b62806799a0ff51b449a69afb6bed0a10c93d746da54a4fb4cb8d04b805790429388958cf4c3f60caddae39b57014805172e97236c92a2762'
+  const claimReq: ClaimReq = {
+    lockScript: serializeScript(addressToScript(RECEIVER_ADDRESS)),
+    withdrawal_lock_hash: scriptToHash(addressToScript(SENDER_ADDRESS)),
+    claims: [
+      {
+        cotaId: '0x2c46b3babebf35ddb6f1ce7b0da79ada5945e9e5',
+        tokenIndex: '0x00000000',
+      },
+      {
+        cotaId: '0x2c46b3babebf35ddb6f1ce7b0da79ada5945e9e5',
+        tokenIndex: '0x00000001',
+      },
+    ],
+  }
+
+  const { smtRootHash, claimSmtEntry } = await generateClaimCotaSmt(claimReq)
+  const outputsData = [`0x00${smtRootHash}`]
 
   const withdrawalCellDep: CKBComponents.CellDep = { outPoint: withdrawalOutPoint, depType: 'code' }
   const cellDeps = [withdrawalCellDep, await secp256k1Dep(), CotaTypeDep]
@@ -191,11 +218,10 @@ export const claimCotaNFT = async (
     witnesses: [],
   }
   rawTx.witnesses = rawTx.inputs.map((_, i) =>
-    i > 0 ? '0x' : { lock: '', inputType: `0x03${witnessData}`, outputType: '' },
+    i > 0 ? '0x' : { lock: '', inputType: `0x04${claimSmtEntry}`, outputType: '' },
   )
   const signedTx = ckb.signTransaction(RECEIVER_COTA_PRIVATE_KEY)(rawTx)
   console.log(JSON.stringify(signedTx))
   let txHash = await ckb.rpc.sendTransaction(signedTx, 'passthrough')
   console.info(`Claim cota nft from mint tx has been sent with tx hash ${txHash}`)
-  return txHash
 }

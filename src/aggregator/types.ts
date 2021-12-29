@@ -1,7 +1,7 @@
-export interface SmtReq{}
-export interface SmtResp{}
+export interface SmtReq {}
+export interface SmtResp {}
 
-export interface DefineResp extends SmtResp{
+export interface DefineResp extends SmtResp {
   smtRootHash: Hex
   defineSmtEntry: Hex
 }
@@ -15,10 +15,10 @@ export interface DefineReq extends SmtReq {
 }
 
 export interface MintWithdrawal {
-  tokenIndex: Hex,
-  state: Hex,
-  characteristic: Hex,
-  toLockScript: Hex,
+  tokenIndex: Hex
+  state: Hex
+  characteristic: Hex
+  toLockScript: Hex
 }
 
 export interface MintReq extends SmtReq {
@@ -28,7 +28,23 @@ export interface MintReq extends SmtReq {
   withdrawals: MintWithdrawal[]
 }
 
-export interface MintResp extends SmtResp{
+export interface MintResp extends SmtResp {
   smtRootHash: Hex
   mintSmtEntry: Hex
+}
+
+export interface Claim {
+  cotaId: Hex
+  tokenIndex: Hex
+}
+
+export interface ClaimReq extends SmtReq {
+  lockScript: Hex
+  withdrawal_lock_hash: Hex
+  claims: Claim[]
+}
+
+export interface ClaimResp extends SmtResp {
+  smtRootHash: Hex
+  claimSmtEntry: Hex
 }

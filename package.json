@@ -8,6 +8,7 @@
     "start": "ts-node src/index.ts",
     "start:registry": "ts-node src/generator/registry.ts",
     "start:define": "ts-node src/generator/define.ts",
+    "start:mint": "ts-node src/generator/mint.ts",
     "start:claim": "ts-node src/generator/claim.ts",
     "lint": "eslint src/**/*.ts --fix",
     "prepare": "husky install"
