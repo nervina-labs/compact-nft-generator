@@ -10,6 +10,8 @@ import {
   MintResp,
   SmtReq,
   SmtResp,
+  UpdateReq,
+  UpdateResp,
   WithdrawalReq,
   WithdrawalResp,
 } from './types'
@@ -57,4 +59,8 @@ export const generateWithdrawalCotaSmt = async (withdrawal: WithdrawalReq): Prom
 
 export const generateClaimCotaSmt = async (claim: ClaimReq): Promise<ClaimResp> => {
   return (await generateCotaSmt('generate_claim_cota_smt', claim)) as Promise<ClaimResp>
+}
+
+export const generateUpdateCotaSmt = async (update: UpdateReq): Promise<UpdateResp> => {
+  return (await generateCotaSmt('generate_update_cota_smt', update)) as Promise<UpdateResp>
 }

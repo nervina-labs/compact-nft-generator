@@ -65,3 +65,21 @@ export interface ClaimResp extends SmtResp {
   smtRootHash: Hex
   claimSmtEntry: Hex
 }
+
+
+export interface Nft {
+  cotaId: Hex
+  tokenIndex: Hex
+  state: Hex
+  characteristic: Hex
+}
+
+export interface UpdateReq extends SmtReq {
+  lockHash: Hex
+  nfts: Nft[]
+}
+
+export interface UpdateResp extends SmtResp {
+  smtRootHash: Hex
+  updateSmtEntry: Hex
+}
