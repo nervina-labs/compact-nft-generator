@@ -33,6 +33,23 @@ export interface MintResp extends SmtResp {
   mintSmtEntry: Hex
 }
 
+export interface TransferWithdrawal {
+  cotaId: Hex
+  tokenIndex: Hex
+  toLockScript: Hex
+}
+
+export interface WithdrawalReq extends SmtReq {
+  lockHash: CKBComponents.Hash
+  outPoint: Hex
+  withdrawals: TransferWithdrawal[]
+}
+
+export interface WithdrawalResp extends SmtResp {
+  smtRootHash: Hex
+  withdrawalSmtEntry: Hex
+}
+
 export interface Claim {
   cotaId: Hex
   tokenIndex: Hex

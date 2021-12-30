@@ -1,7 +1,18 @@
 import fetch from 'node-fetch'
 import { COTA_AGGREGATOR_RPC } from '../utils/config'
 import { toCamelcase, toSnakeCase } from '../utils/util'
-import { ClaimReq, ClaimResp, DefineReq, DefineResp, MintReq, MintResp, SmtReq, SmtResp } from './types'
+import {
+  ClaimReq,
+  ClaimResp,
+  DefineReq,
+  DefineResp,
+  MintReq,
+  MintResp,
+  SmtReq,
+  SmtResp,
+  WithdrawalReq,
+  WithdrawalResp,
+} from './types'
 
 export const generateCotaSmt = async (method: string, req: SmtReq): Promise<SmtResp> => {
   console.log(JSON.stringify(toSnakeCase(req)))
@@ -38,6 +49,10 @@ export const generateDefineCotaSmt = async (define: DefineReq): Promise<DefineRe
 
 export const generateMintCotaSmt = async (mint: MintReq): Promise<MintResp> => {
   return (await generateCotaSmt('generate_mint_cota_smt', mint)) as Promise<MintResp>
+}
+
+export const generateWithdrawalCotaSmt = async (withdrawal: WithdrawalReq): Promise<WithdrawalResp> => {
+  return (await generateCotaSmt('generate_withdrawal_cota_smt', withdrawal)) as Promise<WithdrawalResp>
 }
 
 export const generateClaimCotaSmt = async (claim: ClaimReq): Promise<ClaimResp> => {
