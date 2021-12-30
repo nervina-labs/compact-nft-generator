@@ -1,4 +1,4 @@
-export const FEE = BigInt(1000)
+export const FEE = BigInt(1100)
 
 export const RegistryTypeScript: CKBComponents.Script = {
   codeHash: '0x3840d6b71a291f95430a24274206aa5b636319f17c955e780011c97d986070e3',

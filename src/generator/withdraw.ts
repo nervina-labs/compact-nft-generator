@@ -2,8 +2,8 @@ import { withdrawCotaNFT } from '../rpc/cota'
 
 const run = async () => {
   const cotaOutPoint: CKBComponents.OutPoint = {
-    txHash: '0x49fdb28bb57c51817c30c7dc4e3b2eccf8a93b20eecf4b41abfa64ed0cb52b30',
-    index: '0x2',
+    txHash: '0xa6d65e3117e4b15beb69a9a267b4c7e042d3e9a84733fe6f1fa3a07b747dff51',
+    index: '0x0',
   }
   await withdrawCotaNFT(cotaOutPoint)
 }
