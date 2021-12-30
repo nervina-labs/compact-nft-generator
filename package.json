@@ -9,7 +9,9 @@
     "start:registry": "ts-node src/generator/registry.ts",
     "start:define": "ts-node src/generator/define.ts",
     "start:mint": "ts-node src/generator/mint.ts",
+    "start:withdraw": "ts-node src/generator/withdraw.ts",
     "start:claim": "ts-node src/generator/claim.ts",
+    "start:update": "ts-node src/generator/update.ts",
     "lint": "eslint src/**/*.ts --fix",
     "prepare": "husky install"
   },
