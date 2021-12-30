@@ -3,6 +3,13 @@ declare var TextEncoder: any
 declare var TextDecoder: any
 
 type Hex = string
+type Byte = string
+type Byte4 = string
+type Byte20 = string
+type Byte24 = string
+type Byte32 = string
+type Bytes = string
+
 
 interface IndexerCell {
   blockNumber: CKBComponents.BlockNumber

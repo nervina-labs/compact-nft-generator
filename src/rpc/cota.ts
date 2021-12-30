@@ -10,7 +10,13 @@ import {
 } from '@nervosnetwork/ckb-sdk-utils'
 import blake2b from '@nervosnetwork/ckb-sdk-utils/lib/crypto/blake2b'
 import { secp256k1Dep } from '../account'
-import { generateClaimCotaSmt, generateDefineCotaSmt, generateMintCotaSmt, generateUpdateCotaSmt, generateWithdrawalCotaSmt } from '../aggregator/cota'
+import {
+  generateClaimCotaSmt,
+  generateDefineCotaSmt,
+  generateMintCotaSmt,
+  generateUpdateCotaSmt,
+  generateWithdrawalCotaSmt,
+} from '../aggregator/cota'
 import { ClaimReq, DefineReq, MintReq, MintResp, UpdateReq, WithdrawalReq } from '../aggregator/types'
 import { getLiveCell } from '../collector'
 import { FEE, CotaTypeDep } from '../constants'
@@ -157,7 +163,7 @@ export const withdrawCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
       },
     ],
   }
-  const {smtRootHash, withdrawalSmtEntry} = await generateWithdrawalCotaSmt(withdrawalReq)
+  const { smtRootHash, withdrawalSmtEntry } = await generateWithdrawalCotaSmt(withdrawalReq)
   const outputsData = [`0x00${smtRootHash}`]
   const cellDeps = [await secp256k1Dep(), CotaTypeDep]
   const rawTx = {
@@ -233,10 +239,7 @@ export const claimCotaNFT = async (
   console.info(`Claim cota nft from mint tx has been sent with tx hash ${txHash}`)
 }
 
-
-export const UpdateCotaNFT = async (
-  cotaOutPoint: CKBComponents.OutPoint,
-) => {
+export const UpdateCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
   const inputs = [
     {
       previousOutput: cotaOutPoint,
@@ -254,8 +257,8 @@ export const UpdateCotaNFT = async (
       {
         cotaId: '0x2c46b3babebf35ddb6f1ce7b0da79ada5945e9e5',
         tokenIndex: '0x00000001',
-        state: "0x00",
-        characteristic: "0xa5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5"
+        state: '0x00',
+        characteristic: '0xa5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5',
       },
     ],
   }

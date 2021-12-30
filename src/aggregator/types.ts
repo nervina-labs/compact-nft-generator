@@ -2,84 +2,83 @@ export interface SmtReq {}
 export interface SmtResp {}
 
 export interface DefineResp extends SmtResp {
-  smtRootHash: Hex
-  defineSmtEntry: Hex
+  smtRootHash: Byte32
+  defineSmtEntry: Bytes
 }
 
 export interface DefineReq extends SmtReq {
   lockHash: CKBComponents.Hash
-  cotaId: Hex
-  total: Hex
-  issued: Hex
-  configure: Hex
+  cotaId: Byte20
+  total: Byte4
+  issued: Byte4
+  configure: Byte
 }
 
 export interface MintWithdrawal {
-  tokenIndex: Hex
-  state: Hex
-  characteristic: Hex
-  toLockScript: Hex
+  tokenIndex: Byte4
+  state: Byte
+  characteristic: Byte20
+  toLockScript: Bytes
 }
 
 export interface MintReq extends SmtReq {
   lockHash: CKBComponents.Hash
-  cotaId: Hex
-  outPoint: Hex
+  cotaId: Byte20
+  outPoint: Byte24
   withdrawals: MintWithdrawal[]
 }
 
 export interface MintResp extends SmtResp {
-  smtRootHash: Hex
-  mintSmtEntry: Hex
+  smtRootHash: Byte32
+  mintSmtEntry: Bytes
 }
 
 export interface TransferWithdrawal {
-  cotaId: Hex
-  tokenIndex: Hex
-  toLockScript: Hex
+  cotaId: Byte20
+  tokenIndex: Byte4
+  toLockScript: Bytes
 }
 
 export interface WithdrawalReq extends SmtReq {
   lockHash: CKBComponents.Hash
-  outPoint: Hex
+  outPoint: Byte24
   withdrawals: TransferWithdrawal[]
 }
 
 export interface WithdrawalResp extends SmtResp {
-  smtRootHash: Hex
-  withdrawalSmtEntry: Hex
+  smtRootHash: Byte32
+  withdrawalSmtEntry: Bytes
 }
 
 export interface Claim {
-  cotaId: Hex
-  tokenIndex: Hex
+  cotaId: Byte20
+  tokenIndex: Byte4
 }
 
 export interface ClaimReq extends SmtReq {
-  lockScript: Hex
-  withdrawal_lock_hash: Hex
+  lockScript: Bytes
+  withdrawal_lock_hash: Byte32
   claims: Claim[]
 }
 
 export interface ClaimResp extends SmtResp {
-  smtRootHash: Hex
-  claimSmtEntry: Hex
+  smtRootHash: Byte32
+  claimSmtEntry: Bytes
 }
 
-
 export interface Nft {
-  cotaId: Hex
-  tokenIndex: Hex
-  state: Hex
-  characteristic: Hex
+  cotaId: Byte20
+  tokenIndex: Byte4
+  state: Byte
+  characteristic: Byte20
 }
 
 export interface UpdateReq extends SmtReq {
-  lockHash: Hex
+  lockHash: Byte32
   nfts: Nft[]
 }
 
 export interface UpdateResp extends SmtResp {
-  smtRootHash: Hex
-  updateSmtEntry: Hex
+  smtRootHash: Byte32
+  updateSmtEntry: Bytes
 }
