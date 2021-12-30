@@ -2,11 +2,11 @@ import { claimCotaNFT } from '../rpc/cota'
 
 const run = async () => {
   const cotaOutPoint: CKBComponents.OutPoint = {
-    txHash: '0x7a5a3faa6957b03869ec269357a1e994f3802d3a06e33f4627c4e3bbbb04e3de',
-    index: '0x1',
+    txHash: '0x49fdb28bb57c51817c30c7dc4e3b2eccf8a93b20eecf4b41abfa64ed0cb52b30',
+    index: '0x2',
   }
   const withdawalOutPoint: CKBComponents.OutPoint = {
-    txHash: '0xd302631846a06cab34f7d89e7d5403b3e26ddc52967bcf6002c81265fb46e4be',
+    txHash: '0xac4f52d57d620ee5dd28ae00a6641f8f88571f183ba4221c5c74dc33a1d5e99c',
     index: '0x0',
   }
   await claimCotaNFT(cotaOutPoint, withdawalOutPoint)

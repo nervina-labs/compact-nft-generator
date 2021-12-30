@@ -21,7 +21,7 @@ import {
   SENDER_ADDRESS,
   RECEIVER_ADDRESS,
 } from '../utils/config'
-import { u8ToHex } from '../utils/hex'
+import { append0x, u8ToHex } from '../utils/hex'
 
 const ckb = new CKB(CKB_NODE_RPC)
 
@@ -94,7 +94,7 @@ export const mintCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
   const mintReq: MintReq = {
     lockHash: scriptToHash(addressToScript(SENDER_ADDRESS)),
     cotaId: '0x2c46b3babebf35ddb6f1ce7b0da79ada5945e9e5',
-    outPoint: serializeOutPoint(cotaOutPoint),
+    outPoint: append0x(serializeOutPoint(cotaOutPoint).slice(26)),
     withdrawals: [
       {
         tokenIndex: '0x00000000',
