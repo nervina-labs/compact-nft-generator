@@ -1,4 +1,4 @@
-import { mintCotaNFT } from '../rpc/cota'
+import { mintCotaNFT } from '../../rpc/cota'
 
 const run = async () => {
   const cotaOutPoint: CKBComponents.OutPoint = {

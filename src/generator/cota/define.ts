@@ -1,4 +1,4 @@
-import { defineCotaNFT } from '../rpc/cota'
+import { defineCotaNFT } from '../../rpc/cota'
 
 const run = async () => {
   const cotaOutPoint: CKBComponents.OutPoint = {

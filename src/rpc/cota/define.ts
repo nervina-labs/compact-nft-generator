@@ -1,13 +1,13 @@
 import CKB from '@nervosnetwork/ckb-sdk-core'
 import { addressToScript, hexToBytes, PERSONAL, scriptToHash, serializeInput } from '@nervosnetwork/ckb-sdk-utils'
 import blake2b from '@nervosnetwork/ckb-sdk-utils/lib/crypto/blake2b'
-import { secp256k1Dep } from '../account'
-import { generateDefineCotaSmt } from '../aggregator/cota'
-import { DefineReq } from '../aggregator/types'
-import { getLiveCell } from '../collector'
-import { FEE, CotaTypeDep } from '../constants'
-import { CKB_NODE_RPC, SENDER_COTA_PRIVATE_KEY, SENDER_ADDRESS } from '../utils/config'
-import { u8ToHex } from '../utils/hex'
+import { secp256k1Dep } from '../../account'
+import { generateDefineCotaSmt } from '../../aggregator/cota'
+import { DefineReq } from '../../aggregator/types'
+import { getLiveCell } from '../../collector'
+import { FEE, CotaTypeDep } from '../../constants'
+import { CKB_NODE_RPC, SENDER_COTA_PRIVATE_KEY, SENDER_ADDRESS } from '../../utils/config'
+import { u8ToHex } from '../../utils/hex'
 
 const ckb = new CKB(CKB_NODE_RPC)
 

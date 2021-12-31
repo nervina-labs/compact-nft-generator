@@ -1,12 +1,12 @@
 import CKB from '@nervosnetwork/ckb-sdk-core'
 import { addressToScript, scriptToHash, serializeOutPoint, serializeScript } from '@nervosnetwork/ckb-sdk-utils'
-import { secp256k1Dep } from '../account'
-import { generateWithdrawalCotaSmt } from '../aggregator/cota'
-import { WithdrawalReq } from '../aggregator/types'
-import { getLiveCell } from '../collector'
-import { FEE, CotaTypeDep } from '../constants'
-import { CKB_NODE_RPC, SENDER_ADDRESS, RECEIVER_ADDRESS, RECEIVER_COTA_PRIVATE_KEY } from '../utils/config'
-import { append0x } from '../utils/hex'
+import { secp256k1Dep } from '../../account'
+import { generateWithdrawalCotaSmt } from '../../aggregator/cota'
+import { WithdrawalReq } from '../../aggregator/types'
+import { getLiveCell } from '../../collector'
+import { FEE, CotaTypeDep } from '../../constants'
+import { CKB_NODE_RPC, SENDER_ADDRESS, RECEIVER_ADDRESS, RECEIVER_COTA_PRIVATE_KEY } from '../../utils/config'
+import { append0x } from '../../utils/hex'
 
 const ckb = new CKB(CKB_NODE_RPC)
 

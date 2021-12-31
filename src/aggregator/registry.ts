@@ -4,7 +4,7 @@ import { toCamelcase } from '../utils/util'
 
 export interface RegistryResp {
   smtRootHash: Hex
-  registrySmtEntries: Hex
+  registrySmtEntry: Hex
 }
 
 export const registerCotaCells = async (lockHashes: CKBComponents.Hash[]): Promise<RegistryResp> => {
@@ -24,7 +24,12 @@ export const registerCotaCells = async (lockHashes: CKBComponents.Hash[]): Promi
       body,
     })
     const response = await res.json()
-    return toCamelcase(response.result)
+    if (response.error) {
+      console.error(response)
+    } else {
+      console.log(JSON.stringify(response))
+      return toCamelcase(response.result)
+    }
   } catch (error) {
     console.error('error', error)
   }

@@ -1,4 +1,4 @@
-import { withdrawCotaNFT } from '../rpc/cota'
+import { withdrawCotaNFT } from '../../rpc/cota'
 
 const run = async () => {
   const cotaOutPoint: CKBComponents.OutPoint = {
