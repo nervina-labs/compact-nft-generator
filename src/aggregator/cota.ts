@@ -1,4 +1,4 @@
-import fetch from 'node-fetch'
+import axios from 'axios'
 import { COTA_AGGREGATOR_RPC } from '../utils/config'
 import { toCamelcase, toSnakeCase } from '../utils/util'
 import {
@@ -16,6 +16,7 @@ import {
   WithdrawalResp,
 } from './types'
 
+
 export const generateCotaSmt = async (method: string, req: SmtReq): Promise<SmtResp> => {
   console.log(JSON.stringify(toSnakeCase(req)))
   let payload = {
@@ -26,14 +27,15 @@ export const generateCotaSmt = async (method: string, req: SmtReq): Promise<SmtR
   }
   const body = JSON.stringify(payload, null, '')
   try {
-    let res = await fetch(COTA_AGGREGATOR_RPC, {
-      method: 'POST',
+    let response = (await axios({
+      method: 'post',
+      url: COTA_AGGREGATOR_RPC,
       headers: {
         'Content-Type': 'application/json',
       },
-      body,
-    })
-    const response = await res.json()
+      timeout: 20000,
+      data: body
+    })).data
     if (response.error) {
       console.error(response)
     } else {

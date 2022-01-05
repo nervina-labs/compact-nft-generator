@@ -15,8 +15,7 @@ const SENDER_ADDRESS = process.env.SENDER_ADDRESS || 'ckteeeeeeeeeeeeeeeeeeeeeee
 const RECEIVER_ADDRESS =
   process.env.RECEIVER_ADDRESS || 'ckteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 const ALICE_ADDRESS = process.env.ALICE_ADDRESS || 'ckteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-const BOB_ADDRESS =
-  process.env.BOB_ADDRESS || 'ckteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+const BOB_ADDRESS = process.env.BOB_ADDRESS || 'ckteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 
 const CKB_NODE_RPC = process.env.CKB_NODE_RPC || 'http://localhost:8114'
 const CKB_NODE_INDEXER = process.env.CKB_NODE_INDEXER || 'http://localhost:8116'

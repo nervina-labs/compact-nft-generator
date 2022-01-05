@@ -5,7 +5,7 @@ import { generateMintCotaSmt } from '../../aggregator/cota'
 import { MintReq } from '../../aggregator/types'
 import { getLiveCell } from '../../collector'
 import { FEE, CotaTypeDep } from '../../constants'
-import { CKB_NODE_RPC, SENDER_COTA_PRIVATE_KEY, SENDER_ADDRESS, RECEIVER_ADDRESS } from '../../utils/config'
+import { CKB_NODE_RPC, SENDER_COTA_PRIVATE_KEY, SENDER_ADDRESS, RECEIVER_ADDRESS, ALICE_ADDRESS, BOB_ADDRESS } from '../../utils/config'
 import { append0x } from '../../utils/hex'
 
 const ckb = new CKB(CKB_NODE_RPC)
@@ -22,24 +22,28 @@ export const mintCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
   const outputs = [cotaCell.output]
   outputs[0].capacity = `0x${(BigInt(outputs[0].capacity) - FEE).toString(16)}`
 
-  const toLockScript = addressToScript(RECEIVER_ADDRESS)
-
   const mintReq: MintReq = {
     lockHash: scriptToHash(addressToScript(SENDER_ADDRESS)),
-    cotaId: '0x2c46b3babebf35ddb6f1ce7b0da79ada5945e9e5',
+    cotaId: '0x0629952fd6c6c12aff40d77f16d3e8d060d0608c',
     outPoint: append0x(serializeOutPoint(cotaOutPoint).slice(26)),
     withdrawals: [
       {
         tokenIndex: '0x00000000',
         state: '0x00',
         characteristic: '0x0505050505050505050505050505050505050505',
-        toLockScript: serializeScript(toLockScript),
+        toLockScript: serializeScript(addressToScript(RECEIVER_ADDRESS)),
       },
       {
         tokenIndex: '0x00000001',
         state: '0x00',
         characteristic: '0x0505050505050505050505050505050505050505',
-        toLockScript: serializeScript(toLockScript),
+        toLockScript: serializeScript(addressToScript(ALICE_ADDRESS)),
+      },
+      {
+        tokenIndex: '0x00000002',
+        state: '0x00',
+        characteristic: '0x0505050505050505050505050505050505050505',
+        toLockScript: serializeScript(addressToScript(BOB_ADDRESS)),
       },
     ],
   }

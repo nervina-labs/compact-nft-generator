@@ -5,7 +5,7 @@ import { generateWithdrawalCotaSmt } from '../../aggregator/cota'
 import { WithdrawalReq } from '../../aggregator/types'
 import { getLiveCell } from '../../collector'
 import { FEE, CotaTypeDep } from '../../constants'
-import { CKB_NODE_RPC, SENDER_ADDRESS, RECEIVER_ADDRESS, RECEIVER_COTA_PRIVATE_KEY } from '../../utils/config'
+import { CKB_NODE_RPC, SENDER_ADDRESS, RECEIVER_ADDRESS, RECEIVER_COTA_PRIVATE_KEY, BOB_COTA_PRIVATE_KEY, ALICE_ADDRESS, BOB_ADDRESS } from '../../utils/config'
 import { append0x } from '../../utils/hex'
 
 const ckb = new CKB(CKB_NODE_RPC)
@@ -20,14 +20,14 @@ export const withdrawCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
   const cotaCell = await getLiveCell(cotaOutPoint)
   const outputs = [cotaCell.output]
   outputs[0].capacity = `0x${(BigInt(outputs[0].capacity) - FEE).toString(16)}`
-  const toLockScript = addressToScript(SENDER_ADDRESS)
+  const toLockScript = addressToScript(ALICE_ADDRESS)
   const withdrawalReq: WithdrawalReq = {
-    lockHash: scriptToHash(addressToScript(RECEIVER_ADDRESS)),
+    lockHash: scriptToHash(addressToScript(BOB_ADDRESS)),
     outPoint: append0x(serializeOutPoint(cotaOutPoint).slice(26)),
     withdrawals: [
       {
-        cotaId: '0x2c46b3babebf35ddb6f1ce7b0da79ada5945e9e5',
-        tokenIndex: '0x00000000',
+        cotaId: '0x0629952fd6c6c12aff40d77f16d3e8d060d0608c',
+        tokenIndex: '0x00000002',
         toLockScript: serializeScript(toLockScript),
       },
     ],
@@ -47,7 +47,7 @@ export const withdrawCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
   rawTx.witnesses = rawTx.inputs.map((_, i) =>
     i > 0 ? '0x' : { lock: '', inputType: `0x03${withdrawalSmtEntry}`, outputType: '' },
   )
-  const signedTx = ckb.signTransaction(RECEIVER_COTA_PRIVATE_KEY)(rawTx)
+  const signedTx = ckb.signTransaction(BOB_COTA_PRIVATE_KEY)(rawTx)
   console.log(JSON.stringify(signedTx))
   let txHash = await ckb.rpc.sendTransaction(signedTx, 'passthrough')
   console.info(`Withdraw cota nft from mint tx has been sent with tx hash ${txHash}`)

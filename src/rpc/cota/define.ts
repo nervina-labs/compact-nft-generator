@@ -31,10 +31,13 @@ export const defineCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
   const outputs = [cotaCell.output]
   outputs[0].capacity = `0x${(BigInt(outputs[0].capacity) - FEE).toString(16)}`
 
+  const cotaId = generateCotaId(inputs[0], 0)
+  console.info(`cota_id:  ${cotaId}`)
+
   const defineReq: DefineReq = {
     lockHash: scriptToHash(addressToScript(SENDER_ADDRESS)),
-    cotaId: generateCotaId(inputs[0], 0),
-    total: '0x00000064',
+    cotaId,
+    total: '0x00000032',
     issued: '0x00000000',
     configure: '0x00',
   }
