@@ -12,6 +12,7 @@
     "cota:withdraw": "ts-node src/generator/cota/withdraw.ts",
     "cota:claim": "ts-node src/generator/cota/claim.ts",
     "cota:update": "ts-node src/generator/cota/update.ts",
+    "cota:transfer": "ts-node src/generator/cota/transfer.ts",
     "lint": "eslint src/**/*.ts --fix",
     "prepare": "husky install"
   },

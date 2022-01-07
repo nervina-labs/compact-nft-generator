@@ -50,6 +50,18 @@ export interface WithdrawalResp extends SmtResp {
   withdrawalSmtEntry: Bytes
 }
 
+export interface TransferReq extends SmtReq {
+  lockHash: CKBComponents.Hash
+  withdrawalLockHash: CKBComponents.Hash
+  claimOutPoint: Byte24
+  transfers: TransferWithdrawal[]
+}
+
+export interface TransferResp extends SmtResp {
+  smtRootHash: Byte32
+  transferSmtEntry: Bytes
+}
+
 export interface Claim {
   cotaId: Byte20
   tokenIndex: Byte4
@@ -57,7 +69,7 @@ export interface Claim {
 
 export interface ClaimReq extends SmtReq {
   lockScript: Bytes
-  withdrawal_lock_hash: Byte32
+  withdrawalLockHash: Byte32
   claims: Claim[]
 }
 

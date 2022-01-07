@@ -1,38 +1,37 @@
 import CKB from '@nervosnetwork/ckb-sdk-core'
 import { addressToScript, scriptToHash, serializeOutPoint, serializeScript } from '@nervosnetwork/ckb-sdk-utils'
 import { secp256k1Dep } from '../../account'
-import { generateWithdrawalCotaSmt } from '../../aggregator/cota'
-import { WithdrawalReq } from '../../aggregator/types'
-import { getLiveCell } from '../../collector'
+import { generateTransferCotaSmt } from '../../aggregator/cota'
+import { TransferReq } from '../../aggregator/types'
 import { FEE, CotaTypeDep } from '../../constants'
 import { CKB_NODE_RPC, SENDER_ADDRESS, RECEIVER_ADDRESS, RECEIVER_COTA_PRIVATE_KEY, BOB_COTA_PRIVATE_KEY, ALICE_ADDRESS, BOB_ADDRESS, ALICE_COTA_PRIVATE_KEY, SENDER_COTA_PRIVATE_KEY } from '../../utils/config'
 import { append0x } from '../../utils/hex'
 
 const ckb = new CKB(CKB_NODE_RPC)
 
-export const withdrawCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
+export const transferCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint, withdrawalLockHash: CKBComponents.Hash, cotaOutput: CKBComponents.CellOutput) => {
   const inputs = [
     {
       previousOutput: cotaOutPoint,
       since: '0x0',
     },
   ]
-  const cotaCell = await getLiveCell(cotaOutPoint)
-  const outputs = [cotaCell.output]
+  const outputs = [cotaOutput]
   outputs[0].capacity = `0x${(BigInt(outputs[0].capacity) - FEE).toString(16)}`
-  const toLockScript = addressToScript(BOB_ADDRESS)
-  const withdrawalReq: WithdrawalReq = {
+  const toLockScript = addressToScript(ALICE_ADDRESS)
+  const transferReq: TransferReq = {
     lockHash: scriptToHash(addressToScript(RECEIVER_ADDRESS)),
-    outPoint: append0x(serializeOutPoint(cotaOutPoint).slice(26)),
-    withdrawals: [
+    withdrawalLockHash,
+    claimOutPoint: append0x(serializeOutPoint(cotaOutPoint).slice(26)),
+    transfers: [
       {
         cotaId: '0x0f162f7d36cdc2ac81d311d82b90a95f7d709325',
-        tokenIndex: '0x00000000',
+        tokenIndex: '0x00000005',
         toLockScript: serializeScript(toLockScript),
       },
     ],
   }
-  const { smtRootHash, withdrawalSmtEntry } = await generateWithdrawalCotaSmt(withdrawalReq)
+  const { smtRootHash, transferSmtEntry } = await generateTransferCotaSmt(transferReq)
   const outputsData = [`0x00${smtRootHash}`]
   const cellDeps = [await secp256k1Dep(), CotaTypeDep]
   const rawTx = {
@@ -45,11 +44,10 @@ export const withdrawCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
     witnesses: [],
   }
   rawTx.witnesses = rawTx.inputs.map((_, i) =>
-    i > 0 ? '0x' : { lock: '', inputType: `0x03${withdrawalSmtEntry}`, outputType: '' },
+    i > 0 ? '0x' : { lock: '', inputType: `0x03${transferSmtEntry}`, outputType: '' },
   )
   const signedTx = ckb.signTransaction(RECEIVER_COTA_PRIVATE_KEY)(rawTx)
   console.log(JSON.stringify(signedTx))
   let txHash = await ckb.rpc.sendTransaction(signedTx, 'passthrough')
   console.info(`Withdraw cota nft from mint tx has been sent with tx hash ${txHash}`)
-  return txHash
 }

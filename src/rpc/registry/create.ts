@@ -7,7 +7,7 @@ import {
 import blake2b from '@nervosnetwork/ckb-sdk-utils/lib/crypto/blake2b'
 import { registryLockScript, secp256k1Dep } from '../../account'
 import { getCells, collectInputs } from '../../collector'
-import { FEE, RegistryTypeScript, RegistryTypeDep } from '../../constants'
+import { FEE, RegistryTypeScript, CotaTypeDep, MIN_CAPACITY } from '../../constants'
 import { CKB_NODE_RPC, REGISTRY_PRIVATE_KEY } from '../../utils/config'
 import { u64ToLe } from '../../utils/hex'
 
@@ -45,10 +45,11 @@ const generateRegistryTypeArgs = (firstInput: CKBComponents.CellInput, firstOutp
 export const createRegistryCell = async () => {
   const lock = await registryLockScript()
   const liveCells = await getCells(lock)
-  const { inputs, capacity } = collectInputs(liveCells, REGISTRY_CELL_CAPACITY)
+  const { inputs, capacity } = collectInputs(liveCells, REGISTRY_CELL_CAPACITY + MIN_CAPACITY)
   const registryTypeArgs = generateRegistryTypeArgs(inputs[0], BigInt(0))
+  console.info(`registry type args: ${registryTypeArgs}`)
   const outputs = await generateRegistryOutputs(capacity, { ...RegistryTypeScript, args: registryTypeArgs })
-  const cellDeps = [await secp256k1Dep(), RegistryTypeDep]
+  const cellDeps = [await secp256k1Dep(), CotaTypeDep]
   const rawTx = {
     version: '0x0',
     cellDeps,

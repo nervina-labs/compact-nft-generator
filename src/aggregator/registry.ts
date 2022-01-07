@@ -16,15 +16,17 @@ export const registerCotaCells = async (lockHashes: CKBComponents.Hash[]): Promi
   }
   const body = JSON.stringify(payload, null, '')
   try {
-    let response = (await axios({
-      method: 'post',
-      url: REGISTRY_AGGREGATOR_RPC,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      timeout: 10000,
-      data: body
-    })).data
+    let response = (
+      await axios({
+        method: 'post',
+        url: REGISTRY_AGGREGATOR_RPC,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        timeout: 10000,
+        data: body,
+      })
+    ).data
     if (response.error) {
       console.error(response)
     } else {

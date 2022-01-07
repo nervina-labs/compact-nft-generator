@@ -6,7 +6,7 @@ import {
 import { registryLockScript, secp256k1Dep } from '../../account'
 import { registerCotaCells } from '../../aggregator/registry'
 import { getCells, collectInputs, getLiveCell } from '../../collector'
-import { FEE, RegistryTypeDep, CotaTypeScript, CotaTypeDep } from '../../constants'
+import { FEE, CotaTypeScript, CotaTypeDep } from '../../constants'
 import { CKB_NODE_RPC, REGISTRY_PRIVATE_KEY } from '../../utils/config'
 import { append0x, remove0x } from '../../utils/hex'
 
@@ -66,7 +66,7 @@ export const updateRegistryCell = async (registryOutPoint: CKBComponents.OutPoin
 
   const outputsData = outputs.map((_, i) => (i === 0 ? registryCellData : i !== outputs.length - 1 ? '0x00' : '0x'))
 
-  const cellDeps = [await secp256k1Dep(), RegistryTypeDep, CotaTypeDep]
+  const cellDeps = [await secp256k1Dep(), CotaTypeDep]
 
   const rawTx = {
     version: '0x0',

@@ -10,12 +10,13 @@ import {
   MintResp,
   SmtReq,
   SmtResp,
+  TransferReq,
+  TransferResp,
   UpdateReq,
   UpdateResp,
   WithdrawalReq,
   WithdrawalResp,
 } from './types'
-
 
 export const generateCotaSmt = async (method: string, req: SmtReq): Promise<SmtResp> => {
   console.log(JSON.stringify(toSnakeCase(req)))
@@ -27,15 +28,17 @@ export const generateCotaSmt = async (method: string, req: SmtReq): Promise<SmtR
   }
   const body = JSON.stringify(payload, null, '')
   try {
-    let response = (await axios({
-      method: 'post',
-      url: COTA_AGGREGATOR_RPC,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      timeout: 20000,
-      data: body
-    })).data
+    let response = (
+      await axios({
+        method: 'post',
+        url: COTA_AGGREGATOR_RPC,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        timeout: 20000,
+        data: body,
+      })
+    ).data
     if (response.error) {
       console.error(response)
     } else {
@@ -59,6 +62,10 @@ export const generateWithdrawalCotaSmt = async (withdrawal: WithdrawalReq): Prom
   return (await generateCotaSmt('generate_withdrawal_cota_smt', withdrawal)) as Promise<WithdrawalResp>
 }
 
+export const generateTransferCotaSmt = async (transfer: TransferReq): Promise<TransferResp> => {
+  return (await generateCotaSmt('generate_transfer_cota_smt', transfer)) as Promise<TransferResp>
+}
+
 export const generateClaimCotaSmt = async (claim: ClaimReq): Promise<ClaimResp> => {
   return (await generateCotaSmt('generate_claim_cota_smt', claim)) as Promise<ClaimResp>
 }
@@ -66,3 +73,4 @@ export const generateClaimCotaSmt = async (claim: ClaimReq): Promise<ClaimResp> 
 export const generateUpdateCotaSmt = async (update: UpdateReq): Promise<UpdateResp> => {
   return (await generateCotaSmt('generate_update_cota_smt', update)) as Promise<UpdateResp>
 }
+

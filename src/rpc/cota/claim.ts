@@ -5,7 +5,7 @@ import { generateClaimCotaSmt } from '../../aggregator/cota'
 import { ClaimReq } from '../../aggregator/types'
 import { getLiveCell } from '../../collector'
 import { FEE, CotaTypeDep } from '../../constants'
-import { CKB_NODE_RPC, RECEIVER_COTA_PRIVATE_KEY, SENDER_ADDRESS, RECEIVER_ADDRESS, SENDER_COTA_PRIVATE_KEY, BOB_ADDRESS, BOB_COTA_PRIVATE_KEY, ALICE_COTA_PRIVATE_KEY } from '../../utils/config'
+import { CKB_NODE_RPC, RECEIVER_COTA_PRIVATE_KEY, SENDER_ADDRESS, RECEIVER_ADDRESS, SENDER_COTA_PRIVATE_KEY, BOB_ADDRESS, BOB_COTA_PRIVATE_KEY, ALICE_COTA_PRIVATE_KEY, ALICE_ADDRESS } from '../../utils/config'
 
 const ckb = new CKB(CKB_NODE_RPC)
 
@@ -24,13 +24,15 @@ export const claimCotaNFT = async (
   const outputs = [cotaCell.output]
   outputs[0].capacity = `0x${(BigInt(outputs[0].capacity) - FEE).toString(16)}`
 
+  const withdrawalLockHash = scriptToHash(addressToScript(SENDER_ADDRESS))
+
   const claimReq: ClaimReq = {
-    lockScript: serializeScript(addressToScript(BOB_ADDRESS)),
-    withdrawal_lock_hash: scriptToHash(addressToScript(BOB_ADDRESS)),
+    lockScript: serializeScript(addressToScript(RECEIVER_ADDRESS)),
+    withdrawalLockHash,
     claims: [
       {
-        cotaId: '0x0629952fd6c6c12aff40d77f16d3e8d060d0608c',
-        tokenIndex: '0x00000002',
+        cotaId: '0x0f162f7d36cdc2ac81d311d82b90a95f7d709325',
+        tokenIndex: '0x00000005',
       },
     ],
   }
@@ -53,8 +55,9 @@ export const claimCotaNFT = async (
   rawTx.witnesses = rawTx.inputs.map((_, i) =>
     i > 0 ? '0x' : { lock: '', inputType: `0x04${claimSmtEntry}`, outputType: '' },
   )
-  const signedTx = ckb.signTransaction(ALICE_COTA_PRIVATE_KEY)(rawTx)
+  const signedTx = ckb.signTransaction(RECEIVER_COTA_PRIVATE_KEY)(rawTx)
   console.log(JSON.stringify(signedTx))
   let txHash = await ckb.rpc.sendTransaction(signedTx, 'passthrough')
   console.info(`Claim cota nft from mint tx has been sent with tx hash ${txHash}`)
+  return {txHash, withdrawalLockHash, cotaOutput: outputs[0]}
 }
