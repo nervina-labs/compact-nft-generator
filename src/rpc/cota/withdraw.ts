@@ -20,13 +20,13 @@ export const withdrawCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
   const cotaCell = await getLiveCell(cotaOutPoint)
   const outputs = [cotaCell.output]
   outputs[0].capacity = `0x${(BigInt(outputs[0].capacity) - FEE).toString(16)}`
-  const toLockScript = addressToScript(BOB_ADDRESS)
+  const toLockScript = addressToScript(ALICE_ADDRESS)
   const withdrawalReq: WithdrawalReq = {
     lockHash: scriptToHash(addressToScript(RECEIVER_ADDRESS)),
     outPoint: append0x(serializeOutPoint(cotaOutPoint).slice(26)),
     withdrawals: [
       {
-        cotaId: '0x0f162f7d36cdc2ac81d311d82b90a95f7d709325',
+        cotaId: '0x92e81156a629c73decd10d5dbf5e1ee6487ee47c',
         tokenIndex: '0x00000000',
         toLockScript: serializeScript(toLockScript),
       },

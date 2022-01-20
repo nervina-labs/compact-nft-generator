@@ -24,15 +24,15 @@ export const claimCotaNFT = async (
   const outputs = [cotaCell.output]
   outputs[0].capacity = `0x${(BigInt(outputs[0].capacity) - FEE).toString(16)}`
 
-  const withdrawalLockHash = scriptToHash(addressToScript(SENDER_ADDRESS))
+  const withdrawalLockHash = scriptToHash(addressToScript(ALICE_ADDRESS))
 
   const claimReq: ClaimReq = {
-    lockScript: serializeScript(addressToScript(RECEIVER_ADDRESS)),
+    lockScript: serializeScript(addressToScript(BOB_ADDRESS)),
     withdrawalLockHash,
     claims: [
       {
-        cotaId: '0x0f162f7d36cdc2ac81d311d82b90a95f7d709325',
-        tokenIndex: '0x00000005',
+        cotaId: '0x92e81156a629c73decd10d5dbf5e1ee6487ee47c',
+        tokenIndex: '0x00000000',
       },
     ],
   }
@@ -55,9 +55,8 @@ export const claimCotaNFT = async (
   rawTx.witnesses = rawTx.inputs.map((_, i) =>
     i > 0 ? '0x' : { lock: '', inputType: `0x04${claimSmtEntry}`, outputType: '' },
   )
-  const signedTx = ckb.signTransaction(RECEIVER_COTA_PRIVATE_KEY)(rawTx)
+  const signedTx = ckb.signTransaction(BOB_COTA_PRIVATE_KEY)(rawTx)
   console.log(JSON.stringify(signedTx))
   let txHash = await ckb.rpc.sendTransaction(signedTx, 'passthrough')
   console.info(`Claim cota nft from mint tx has been sent with tx hash ${txHash}`)
-  return {txHash, withdrawalLockHash, cotaOutput: outputs[0]}
 }

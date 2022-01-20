@@ -51,9 +51,9 @@ export interface WithdrawalResp extends SmtResp {
 }
 
 export interface TransferReq extends SmtReq {
-  lockHash: CKBComponents.Hash
+  lockScript: Bytes
   withdrawalLockHash: CKBComponents.Hash
-  claimOutPoint: Byte24
+  transferOutPoint: Byte24
   transfers: TransferWithdrawal[]
 }
 

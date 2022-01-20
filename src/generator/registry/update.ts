@@ -3,7 +3,7 @@ import { ALICE_ADDRESS, BOB_ADDRESS, RECEIVER_ADDRESS, SENDER_ADDRESS } from '..
 
 const run = async () => {
   const registryOutPoint: CKBComponents.OutPoint = {
-    txHash: '0x462244c2f376db009ebae265eb29fed2184f720e0a62de4a6432d018444b50cf',
+    txHash: '0xd2ac093bf7f32a6f4825cfb20d2ffa1ba3ee68393c9d182f7e1488463b01ebb2',
     index: '0x0',
   }
   const cotaAddresses: string[] = [ALICE_ADDRESS, BOB_ADDRESS, SENDER_ADDRESS, RECEIVER_ADDRESS]

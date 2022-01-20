@@ -2,8 +2,8 @@ import { defineCotaNFT } from '../../rpc/cota'
 
 const run = async () => {
   const cotaOutPoint: CKBComponents.OutPoint = {
-    txHash: '0xd2ac093bf7f32a6f4825cfb20d2ffa1ba3ee68393c9d182f7e1488463b01ebb2',
-    index: '0x3',
+    txHash: '0xada01660e93a7464cd949fb65f44d2c37f3c4ee2313129f097197b23697d7577',
+    index: '0x0',
   }
   await defineCotaNFT(cotaOutPoint)
 }

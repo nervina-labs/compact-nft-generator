@@ -20,11 +20,11 @@ export const updateCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
   const outputs = [cotaCell.output]
   outputs[0].capacity = `0x${(BigInt(outputs[0].capacity) - FEE).toString(16)}`
   const updateReq: UpdateReq = {
-    lockHash: scriptToHash(addressToScript(BOB_ADDRESS)),
+    lockHash: scriptToHash(addressToScript(RECEIVER_ADDRESS)),
     nfts: [
       {
-        cotaId: '0x0f162f7d36cdc2ac81d311d82b90a95f7d709325',
-        tokenIndex: '0x00000001',
+        cotaId: '0xe2195c905b0dbda99c590957fab4a042815c89c9',
+        tokenIndex: '0x00000000',
         state: '0x00',
         characteristic: '0x2525250505050505050505050505050505050505',
       },
@@ -45,7 +45,7 @@ export const updateCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
   rawTx.witnesses = rawTx.inputs.map((_, i) =>
     i > 0 ? '0x' : { lock: '', inputType: `0x05${updateSmtEntry}`, outputType: '' },
   )
-  const signedTx = ckb.signTransaction(BOB_COTA_PRIVATE_KEY)(rawTx)
+  const signedTx = ckb.signTransaction(RECEIVER_COTA_PRIVATE_KEY)(rawTx)
   console.log(JSON.stringify(signedTx))
   let txHash = await ckb.rpc.sendTransaction(signedTx, 'passthrough')
   console.info(`Update cota nft from mint tx has been sent with tx hash ${txHash}`)

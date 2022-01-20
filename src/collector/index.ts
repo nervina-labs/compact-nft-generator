@@ -69,7 +69,6 @@ export const collectInputs = (liveCells: IndexerCell[], needCapacity: bigint) =>
       break
     }
   }
-  console.log(JSON.stringify(liveCells))
   if (sum < needCapacity + FEE) {
     throw Error('Capacity not enough')
   }

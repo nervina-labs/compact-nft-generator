@@ -1,25 +1,15 @@
-import { claimCotaNFT, withdrawCotaNFT } from '../../rpc/cota'
 import { transferCotaNFT } from '../../rpc/cota/transfer'
 
 const run = async () => {
   let cotaOutPoint: CKBComponents.OutPoint = {
-    txHash: '0xe02b592cb075015259bed46f3f5c62123eeb462ce41252390084953ddb5705a0',
+    txHash: '0x3a13a8fe99475c63d889bbed22ccef3ecdef5931b2d4021a67d9afc16ed02e50',
     index: '0x0',
   }
-  const withdawalOutPoint: CKBComponents.OutPoint = {
-    txHash: '0xada01660e93a7464cd949fb65f44d2c37f3c4ee2313129f097197b23697d7577',
+  let withdrawalOutPoint: CKBComponents.OutPoint = {
+    txHash: '0x5ecb163cbb48b219cad3e51250d7d6587839e6eaf06a7d7f942cd27b0305206d',
     index: '0x0',
   }
-  
-  const {txHash, withdrawalLockHash, cotaOutput} = await claimCotaNFT(cotaOutPoint, withdawalOutPoint)
-  setTimeout(async () => {
-    let cotaOutPoint = {
-      txHash,
-      index: '0x0',
-    }
-    await transferCotaNFT(cotaOutPoint, withdrawalLockHash, cotaOutput)
-  }, 1000)
-  
+  await transferCotaNFT(cotaOutPoint, withdrawalOutPoint)
 }
 
 run()

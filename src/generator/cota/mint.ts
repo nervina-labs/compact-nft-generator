@@ -2,7 +2,7 @@ import { mintCotaNFT } from '../../rpc/cota'
 
 const run = async () => {
   const cotaOutPoint: CKBComponents.OutPoint = {
-    txHash: '0x732db245c7420ebd200bc794680c503e48c790204a02011285e206b16fb0f319',
+    txHash: '0xb0a67f3357173991689bb05d698a5cabb9a95b0fcec2b1640e55b2835e3bcce8',
     index: '0x0',
   }
   await mintCotaNFT(cotaOutPoint)

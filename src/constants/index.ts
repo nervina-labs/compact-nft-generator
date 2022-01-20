@@ -1,4 +1,4 @@
-export const FEE = BigInt(1500)
+export const FEE = BigInt(1600)
 export const MIN_CAPACITY = BigInt(61) * BigInt(100000000)
 
 export const RegistryTypeScript: CKBComponents.Script = {
@@ -14,6 +14,6 @@ export const CotaTypeScript: CKBComponents.Script = {
 }
 
 export const CotaTypeDep: CKBComponents.CellDep = {
-  outPoint: { txHash: '0x6efe711f781d801aca8bf10378037ef18313837908f63eb6a4d1be382eaa4e55', index: '0x0' },
+  outPoint: { txHash: '0x5a6e7159b1cb79b82aed0d579a7b298ac4b6523be689ace019219fc697a77eaf', index: '0x0' },
   depType: 'depGroup',
 }

@@ -73,4 +73,3 @@ export const generateClaimCotaSmt = async (claim: ClaimReq): Promise<ClaimResp> 
 export const generateUpdateCotaSmt = async (update: UpdateReq): Promise<UpdateResp> => {
   return (await generateCotaSmt('generate_update_cota_smt', update)) as Promise<UpdateResp>
 }
-
