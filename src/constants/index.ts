@@ -18,7 +18,6 @@ export const CotaTypeDep: CKBComponents.CellDep = {
   depType: 'depGroup',
 }
 
-
 export const AlwaysSuccessLockScript: CKBComponents.Script = {
   codeHash: '0x1157470ca9de091c21c262bf0754b777f3529e10d2728db8f6b4e04cfc2fbb5f',
   hashType: 'data',
