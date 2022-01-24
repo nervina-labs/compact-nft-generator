@@ -26,7 +26,7 @@ export const withdrawCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
     outPoint: append0x(serializeOutPoint(cotaOutPoint).slice(26)),
     withdrawals: [
       {
-        cotaId: '0x92e81156a629c73decd10d5dbf5e1ee6487ee47c',
+        cotaId: '0x2dd97617e685c0cd44b87cba7e8756ea67a721cd',
         tokenIndex: '0x00000000',
         toLockScript: serializeScript(toLockScript),
       },

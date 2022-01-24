@@ -2,12 +2,12 @@ import CKB from '@nervosnetwork/ckb-sdk-core'
 import {
   addressToScript,
   scriptToHash,
+  serializeWitnessArgs,
 } from '@nervosnetwork/ckb-sdk-utils'
-import { registryLockScript, secp256k1Dep } from '../../account'
 import { registerCotaCells } from '../../aggregator/registry'
 import { getCells, collectInputs, getLiveCell } from '../../collector'
-import { FEE, CotaTypeScript, CotaTypeDep } from '../../constants'
-import { CKB_NODE_RPC, REGISTRY_PRIVATE_KEY } from '../../utils/config'
+import { FEE, CotaTypeScript, CotaTypeDep, AlwaysSuccessLockScript, AlwaysSuccessLockDep } from '../../constants'
+import { CKB_NODE_RPC } from '../../utils/config'
 import { append0x, remove0x } from '../../utils/hex'
 
 const ckb = new CKB(CKB_NODE_RPC)
@@ -17,7 +17,7 @@ const generateCotaOutputs = async (
   inputCapacity: bigint,
   cotaLocks: CKBComponents.Script[],
 ): Promise<CKBComponents.CellOutput[]> => {
-  const registryLock = await registryLockScript()
+  const registryLock = AlwaysSuccessLockScript
   let outputs: CKBComponents.CellOutput[] = cotaLocks.map(lock => {
     const args = append0x(remove0x(scriptToHash(lock)).slice(0, 40))
     const cotaType = { ...CotaTypeScript, args }
@@ -42,7 +42,7 @@ export const updateRegistryCell = async (registryOutPoint: CKBComponents.OutPoin
   const cotaLocks = cotaAddresses.map(address => addressToScript(address))
   const cotaCount = BigInt(cotaLocks.length)
 
-  const registryLock = await registryLockScript()
+  const registryLock = AlwaysSuccessLockScript
   const liveCells = await getCells(registryLock)
   const { inputs: normalInputs, capacity } = collectInputs(liveCells, COTA_CELL_CAPACITY * cotaCount)
 
@@ -66,9 +66,9 @@ export const updateRegistryCell = async (registryOutPoint: CKBComponents.OutPoin
 
   const outputsData = outputs.map((_, i) => (i === 0 ? registryCellData : i !== outputs.length - 1 ? '0x00' : '0x'))
 
-  const cellDeps = [await secp256k1Dep(), CotaTypeDep]
+  const cellDeps = [AlwaysSuccessLockDep, CotaTypeDep]
 
-  const rawTx = {
+  let rawTx = {
     version: '0x0',
     cellDeps,
     headerDeps: [],
@@ -78,11 +78,10 @@ export const updateRegistryCell = async (registryOutPoint: CKBComponents.OutPoin
     witnesses: [],
   }
   rawTx.witnesses = rawTx.inputs.map((_, i) =>
-    i > 0 ? '0x' : { lock: '', inputType: append0x(registrySmtEntry), outputType: '' },
-  )
-  const signedTx = ckb.signTransaction(REGISTRY_PRIVATE_KEY)(rawTx)
-  console.log(JSON.stringify(signedTx))
-  let txHash = await ckb.rpc.sendTransaction(signedTx, 'passthrough')
+      i > 0 ? '0x' : serializeWitnessArgs({ lock: '', inputType: append0x(registrySmtEntry), outputType: '' }),
+    )
+  console.log(JSON.stringify(rawTx))
+  let txHash = await ckb.rpc.sendTransaction(rawTx, 'passthrough')
   console.info(`Update registry cell tx has been sent with tx hash ${txHash}`)
   return txHash
 }

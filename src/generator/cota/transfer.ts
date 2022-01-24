@@ -2,11 +2,11 @@ import { transferCotaNFT } from '../../rpc/cota/transfer'
 
 const run = async () => {
   let cotaOutPoint: CKBComponents.OutPoint = {
-    txHash: '0x3a13a8fe99475c63d889bbed22ccef3ecdef5931b2d4021a67d9afc16ed02e50',
-    index: '0x0',
+    txHash: '0xada588e559ead7bdf10cd42c5f0a2429de9c0b4e2a198f73132c0488fd64863e',
+    index: '0x3',
   }
   let withdrawalOutPoint: CKBComponents.OutPoint = {
-    txHash: '0x5ecb163cbb48b219cad3e51250d7d6587839e6eaf06a7d7f942cd27b0305206d',
+    txHash: '0x46e24443653f2f3661648ec8651fcb3ff2fc993fbb26263e5daa4eacc7dc481b',
     index: '0x0',
   }
   await transferCotaNFT(cotaOutPoint, withdrawalOutPoint)

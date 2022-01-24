@@ -24,7 +24,7 @@ export const mintCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
 
   const mintReq: MintReq = {
     lockHash: scriptToHash(addressToScript(SENDER_ADDRESS)),
-    cotaId: '0x92e81156a629c73decd10d5dbf5e1ee6487ee47c',
+    cotaId: '0x2dd97617e685c0cd44b87cba7e8756ea67a721cd',
     outPoint: append0x(serializeOutPoint(cotaOutPoint).slice(26)),
     withdrawals: [
       {
@@ -37,7 +37,13 @@ export const mintCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
         tokenIndex: '0x00000001',
         state: '0x00',
         characteristic: '0xa505050505050505050505050505050505050505',
-        toLockScript: serializeScript(addressToScript(RECEIVER_ADDRESS)),
+        toLockScript: serializeScript(addressToScript(ALICE_ADDRESS)),
+      },
+      {
+        tokenIndex: '0x00000002',
+        state: '0x00',
+        characteristic: '0xa505050505050505050505050505050505050505',
+        toLockScript: serializeScript(addressToScript(BOB_ADDRESS)),
       },
     ],
   }

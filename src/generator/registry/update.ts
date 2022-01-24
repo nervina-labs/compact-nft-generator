@@ -3,10 +3,10 @@ import { ALICE_ADDRESS, BOB_ADDRESS, RECEIVER_ADDRESS, SENDER_ADDRESS } from '..
 
 const run = async () => {
   const registryOutPoint: CKBComponents.OutPoint = {
-    txHash: '0xd2ac093bf7f32a6f4825cfb20d2ffa1ba3ee68393c9d182f7e1488463b01ebb2',
+    txHash: '0xab7fd96821a043e1d599ca53d1c3b8f1943c3d96fa89ccef7396632adfbf0ae4',
     index: '0x0',
   }
-  const cotaAddresses: string[] = [ALICE_ADDRESS, BOB_ADDRESS, SENDER_ADDRESS, RECEIVER_ADDRESS]
+  const cotaAddresses: string[] = [SENDER_ADDRESS, RECEIVER_ADDRESS, ALICE_ADDRESS, BOB_ADDRESS]
   await updateRegistryCell(registryOutPoint, cotaAddresses)
 }
 

@@ -4,15 +4,6 @@ import { CKB_NODE_RPC, SENDER_ADDRESS, RECEIVER_ADDRESS, REGISTRY_PRIVATE_KEY } 
 
 const ckb = new CKB(CKB_NODE_RPC)
 
-export const registryLockScript = async (): Promise<CKBComponents.Script> => {
-  const secp256k1Dep = (await ckb.loadDeps()).secp256k1Dep
-  return {
-    codeHash: secp256k1Dep.codeHash,
-    hashType: secp256k1Dep.hashType,
-    args: generateLockArgs(REGISTRY_PRIVATE_KEY),
-  }
-}
-
 export const senderLockScript = (): CKBComponents.Script => {
   return addressToScript(SENDER_ADDRESS)
 }
