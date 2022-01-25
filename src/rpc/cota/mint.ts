@@ -6,9 +6,39 @@ import { MintReq } from '../../aggregator/types'
 import { getLiveCell } from '../../collector'
 import { FEE, CotaTypeDep } from '../../constants'
 import { CKB_NODE_RPC, SENDER_COTA_PRIVATE_KEY, SENDER_ADDRESS, RECEIVER_ADDRESS, ALICE_ADDRESS, BOB_ADDRESS } from '../../utils/config'
-import { append0x } from '../../utils/hex'
+import { append0x, u32ToBe } from '../../utils/hex'
 
 const ckb = new CKB(CKB_NODE_RPC)
+
+const batchWithdrawals = new Array(100).fill(0).map((_, index) => {
+  return {
+    tokenIndex: append0x(u32ToBe(index)),
+    state: '0x00',
+    characteristic: '0xa505050505050505050505050505050505050505',
+    toLockScript: serializeScript(addressToScript(RECEIVER_ADDRESS)),
+  }
+})
+
+const withdrawals = [
+  {
+    tokenIndex: '0x00000000',
+    state: '0x00',
+    characteristic: '0xa505050505050505050505050505050505050505',
+    toLockScript: serializeScript(addressToScript(RECEIVER_ADDRESS)),
+  },
+  {
+    tokenIndex: '0x00000001',
+    state: '0x00',
+    characteristic: '0xa505050505050505050505050505050505050505',
+    toLockScript: serializeScript(addressToScript(RECEIVER_ADDRESS)),
+  },
+  {
+    tokenIndex: '0x00000002',
+    state: '0x00',
+    characteristic: '0xa505050505050505050505050505050505050505',
+    toLockScript: serializeScript(addressToScript(RECEIVER_ADDRESS)),
+  },
+];
 
 export const mintCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
   const inputs = [
@@ -24,28 +54,9 @@ export const mintCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
 
   const mintReq: MintReq = {
     lockHash: scriptToHash(addressToScript(SENDER_ADDRESS)),
-    cotaId: '0x2dd97617e685c0cd44b87cba7e8756ea67a721cd',
+    cotaId: '0x7fd23ef0c9c5e4059d8585957431b68d65bb9c97',
     outPoint: append0x(serializeOutPoint(cotaOutPoint).slice(26)),
-    withdrawals: [
-      {
-        tokenIndex: '0x00000000',
-        state: '0x00',
-        characteristic: '0xa505050505050505050505050505050505050505',
-        toLockScript: serializeScript(addressToScript(RECEIVER_ADDRESS)),
-      },
-      {
-        tokenIndex: '0x00000001',
-        state: '0x00',
-        characteristic: '0xa505050505050505050505050505050505050505',
-        toLockScript: serializeScript(addressToScript(ALICE_ADDRESS)),
-      },
-      {
-        tokenIndex: '0x00000002',
-        state: '0x00',
-        characteristic: '0xa505050505050505050505050505050505050505',
-        toLockScript: serializeScript(addressToScript(BOB_ADDRESS)),
-      },
-    ],
+    withdrawals: batchWithdrawals,
   }
 
   const { smtRootHash, mintSmtEntry } = await generateMintCotaSmt(mintReq)

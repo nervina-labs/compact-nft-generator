@@ -37,7 +37,7 @@ export const defineCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
   const defineReq: DefineReq = {
     lockHash: scriptToHash(addressToScript(SENDER_ADDRESS)),
     cotaId,
-    total: '0x00000032',
+    total: '0x00000132',
     issued: '0x00000000',
     configure: '0x00',
   }

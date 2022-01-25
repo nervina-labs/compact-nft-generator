@@ -1,4 +1,4 @@
-export const FEE = BigInt(1600)
+export const FEE = BigInt(1600000)
 export const MIN_CAPACITY = BigInt(61) * BigInt(100000000)
 
 export const RegistryTypeScript: CKBComponents.Script = {
