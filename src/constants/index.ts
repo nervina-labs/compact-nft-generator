@@ -10,11 +10,11 @@ export const RegistryTypeScript: CKBComponents.Script = {
 export const CotaTypeScript: CKBComponents.Script = {
   codeHash: '0x89cd8003a0eaf8e65e0c31525b7d1d5c1becefd2ea75bb4cff87810ae37764d8',
   hashType: 'type',
-  args: '',
+  args: '0x',
 }
 
 export const CotaTypeDep: CKBComponents.CellDep = {
-  outPoint: { txHash: '0x678fb90d09e44e1389d71cf1734b3e98c71718b0c2582a1088c27e2aa384895f', index: '0x0' },
+  outPoint: { txHash: '0xeb8c99e9aaff64ffea5a97100fa9e6c23e59afe7ab9789cd882e3bb9a930c3ea', index: '0x0' },
   depType: 'depGroup',
 }
 

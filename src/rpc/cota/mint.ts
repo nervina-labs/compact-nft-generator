@@ -3,16 +3,9 @@ import { addressToScript, scriptToHash, serializeOutPoint, serializeScript } fro
 import { secp256k1Dep } from '../../account'
 import { generateMintCotaSmt } from '../../aggregator/cota'
 import { MintReq } from '../../aggregator/types'
-import { getCells, getLiveCell } from '../../collector'
+import { getCells } from '../../collector'
 import { FEE, CotaTypeDep, CotaTypeScript } from '../../constants'
-import {
-  CKB_NODE_RPC,
-  SENDER_COTA_PRIVATE_KEY,
-  SENDER_ADDRESS,
-  RECEIVER_ADDRESS,
-  ALICE_ADDRESS,
-  BOB_ADDRESS,
-} from '../../utils/config'
+import { CKB_NODE_RPC, SENDER_COTA_PRIVATE_KEY, RECEIVER_ADDRESS, ALICE_ADDRESS } from '../../utils/config'
 import { append0x, u32ToBe } from '../../utils/hex'
 
 const ckb = new CKB(CKB_NODE_RPC)
@@ -30,20 +23,14 @@ const withdrawals = [
   {
     tokenIndex: '0x00000000',
     state: '0x00',
-    characteristic: '0xa505050505050505050505050505050505050505',
+    characteristic: '0x0505050505050505050505050505050505050505',
     toLockScript: serializeScript(addressToScript(RECEIVER_ADDRESS)),
   },
   {
     tokenIndex: '0x00000001',
     state: '0x00',
-    characteristic: '0xa505050505050505050505050505050505050505',
-    toLockScript: serializeScript(addressToScript(RECEIVER_ADDRESS)),
-  },
-  {
-    tokenIndex: '0x00000002',
-    state: '0x00',
-    characteristic: '0xa505050505050505050505050505050505050505',
-    toLockScript: serializeScript(addressToScript(RECEIVER_ADDRESS)),
+    characteristic: '0x0505050505050505050505050505050505050505',
+    toLockScript: serializeScript(addressToScript(ALICE_ADDRESS)),
   },
 ]
 
@@ -65,7 +52,7 @@ export const mintCotaNFT = async (cotaLock: CKBComponents.Script) => {
 
   const mintReq: MintReq = {
     lockHash: scriptToHash(cotaLock),
-    cotaId: '0xb22585a8053af3fed0fd39127f5b1487ce08b756',
+    cotaId: '0x935c4d7a609475578fe3ddba1b817637f8be4c71',
     outPoint: append0x(serializeOutPoint(cotaCell.outPoint).slice(26)),
     withdrawals: withdrawals,
   }
