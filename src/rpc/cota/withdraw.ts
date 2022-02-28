@@ -3,9 +3,19 @@ import { addressToScript, scriptToHash, serializeOutPoint, serializeScript } fro
 import { secp256k1Dep } from '../../account'
 import { generateWithdrawalCotaSmt } from '../../aggregator/cota'
 import { WithdrawalReq } from '../../aggregator/types'
-import { getLiveCell } from '../../collector'
-import { FEE, CotaTypeDep } from '../../constants'
-import { CKB_NODE_RPC, SENDER_ADDRESS, RECEIVER_ADDRESS, RECEIVER_COTA_PRIVATE_KEY, BOB_COTA_PRIVATE_KEY, ALICE_ADDRESS, BOB_ADDRESS, ALICE_COTA_PRIVATE_KEY, SENDER_COTA_PRIVATE_KEY } from '../../utils/config'
+import { getCells, getLiveCell } from '../../collector'
+import { FEE, CotaTypeDep, CotaTypeScript } from '../../constants'
+import {
+  CKB_NODE_RPC,
+  SENDER_ADDRESS,
+  RECEIVER_ADDRESS,
+  RECEIVER_COTA_PRIVATE_KEY,
+  BOB_COTA_PRIVATE_KEY,
+  ALICE_ADDRESS,
+  BOB_ADDRESS,
+  ALICE_COTA_PRIVATE_KEY,
+  SENDER_COTA_PRIVATE_KEY,
+} from '../../utils/config'
 import { append0x, u32ToBe } from '../../utils/hex'
 
 const ckb = new CKB(CKB_NODE_RPC)
@@ -20,30 +30,35 @@ const batchWithdrawals = new Array(80).fill(0).map((_, index) => {
 
 const withdrawals = [
   {
-    cotaId: '0x4c520ed47063fef801c33a4516190980c80f2179',
+    cotaId: '0xb22585a8053af3fed0fd39127f5b1487ce08b756',
     tokenIndex: '0x00000000',
     toLockScript: serializeScript(addressToScript(ALICE_ADDRESS)),
   },
 ]
 
-export const withdrawCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
+export const withdrawCotaNFT = async (cotaLock: CKBComponents.Script) => {
+  const cotaCells = await getCells(cotaLock, CotaTypeScript)
+  if (!cotaCells || cotaCells.length === 0) {
+    throw new Error("Cota cell doesn't exist")
+  }
+  const cotaCell = cotaCells[0]
   const inputs = [
     {
-      previousOutput: cotaOutPoint,
+      previousOutput: cotaCell.outPoint,
       since: '0x0',
     },
   ]
-  const cotaCell = await getLiveCell(cotaOutPoint)
   const outputs = [cotaCell.output]
   outputs[0].capacity = `0x${(BigInt(outputs[0].capacity) - FEE).toString(16)}`
-  
+
   const withdrawalReq: WithdrawalReq = {
-    lockHash: scriptToHash(addressToScript(RECEIVER_ADDRESS)),
-    outPoint: append0x(serializeOutPoint(cotaOutPoint).slice(26)),
-    withdrawals: batchWithdrawals
+    lockHash: scriptToHash(cotaLock),
+    outPoint: append0x(serializeOutPoint(cotaCell.outPoint).slice(26)),
+    withdrawals,
   }
   const { smtRootHash, withdrawalSmtEntry } = await generateWithdrawalCotaSmt(withdrawalReq)
   const outputsData = [`0x00${smtRootHash}`]
+
   const cellDeps = [await secp256k1Dep(), CotaTypeDep]
   const rawTx = {
     version: '0x0',

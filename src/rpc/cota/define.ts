@@ -1,12 +1,12 @@
 import CKB from '@nervosnetwork/ckb-sdk-core'
-import { addressToScript, hexToBytes, PERSONAL, scriptToHash, serializeInput } from '@nervosnetwork/ckb-sdk-utils'
+import { hexToBytes, PERSONAL, scriptToHash, serializeInput } from '@nervosnetwork/ckb-sdk-utils'
 import blake2b from '@nervosnetwork/ckb-sdk-utils/lib/crypto/blake2b'
 import { secp256k1Dep } from '../../account'
 import { generateDefineCotaSmt } from '../../aggregator/cota'
 import { DefineReq } from '../../aggregator/types'
-import { getLiveCell } from '../../collector'
-import { FEE, CotaTypeDep } from '../../constants'
-import { CKB_NODE_RPC, SENDER_COTA_PRIVATE_KEY, SENDER_ADDRESS } from '../../utils/config'
+import { getCells, getLiveCell } from '../../collector'
+import { FEE, CotaTypeDep, CotaTypeScript } from '../../constants'
+import { CKB_NODE_RPC, SENDER_COTA_PRIVATE_KEY } from '../../utils/config'
 import { u8ToHex } from '../../utils/hex'
 
 const ckb = new CKB(CKB_NODE_RPC)
@@ -19,23 +19,27 @@ const generateCotaId = (firstInput: CKBComponents.CellInput, definesIndex: numbe
   return `0x${s.digest('hex').slice(0, 40)}`
 }
 
-export const defineCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
+export const defineCotaNFT = async (cotaLock: CKBComponents.Script) => {
+  const cotaCells = await getCells(cotaLock, CotaTypeScript)
+  if (!cotaCells || cotaCells.length === 0) {
+    throw new Error("Cota cell doesn't exist")
+  }
+  const cotaCell = cotaCells[0]
   const inputs = [
     {
-      previousOutput: cotaOutPoint,
+      previousOutput: cotaCell.outPoint,
       since: '0x0',
     },
   ]
 
-  const cotaCell = await getLiveCell(cotaOutPoint)
   const outputs = [cotaCell.output]
   outputs[0].capacity = `0x${(BigInt(outputs[0].capacity) - FEE).toString(16)}`
 
   const cotaId = generateCotaId(inputs[0], 0)
-  console.info(`cota_id:  ${cotaId}`)
+  console.info(`cotaId:  ${cotaId}`)
 
   const defineReq: DefineReq = {
-    lockHash: scriptToHash(addressToScript(SENDER_ADDRESS)),
+    lockHash: scriptToHash(cotaLock),
     cotaId,
     total: '0x00000132',
     issued: '0x00000000',

@@ -4,7 +4,7 @@ export const MIN_CAPACITY = BigInt(61) * BigInt(100000000)
 export const RegistryTypeScript: CKBComponents.Script = {
   codeHash: '0x9302db6cc1344b81a5efee06962abcb40427ecfcbe69d471b01b2658ed948075',
   hashType: 'type',
-  args: '',
+  args: '0xf9910364e0ca81a0e074f3aa42fe78cfcc880da6',
 }
 
 export const CotaTypeScript: CKBComponents.Script = {

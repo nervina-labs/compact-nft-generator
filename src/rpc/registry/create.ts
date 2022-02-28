@@ -1,12 +1,15 @@
 import CKB from '@nervosnetwork/ckb-sdk-core'
-import {
-  hexToBytes,
-  serializeInput,
-  PERSONAL,
-} from '@nervosnetwork/ckb-sdk-utils'
+import { hexToBytes, serializeInput, PERSONAL } from '@nervosnetwork/ckb-sdk-utils'
 import blake2b from '@nervosnetwork/ckb-sdk-utils/lib/crypto/blake2b'
 import { getCells, collectInputs } from '../../collector'
-import { FEE, RegistryTypeScript, CotaTypeDep, MIN_CAPACITY, AlwaysSuccessLockDep, AlwaysSuccessLockScript } from '../../constants'
+import {
+  FEE,
+  RegistryTypeScript,
+  CotaTypeDep,
+  MIN_CAPACITY,
+  AlwaysSuccessLockDep,
+  AlwaysSuccessLockScript,
+} from '../../constants'
 import { CKB_NODE_RPC } from '../../utils/config'
 import { u64ToLe } from '../../utils/hex'
 
@@ -44,6 +47,7 @@ const generateRegistryTypeArgs = (firstInput: CKBComponents.CellInput, firstOutp
 export const createRegistryCell = async () => {
   const lock = AlwaysSuccessLockScript
   const liveCells = await getCells(lock)
+  console.log(JSON.stringify(liveCells))
   const { inputs, capacity } = collectInputs(liveCells, REGISTRY_CELL_CAPACITY + MIN_CAPACITY)
   const registryTypeArgs = generateRegistryTypeArgs(inputs[0], BigInt(0))
   console.info(`registry type args: ${registryTypeArgs}`)

@@ -16,6 +16,10 @@ import {
   UpdateResp,
   WithdrawalReq,
   WithdrawalResp,
+  ClaimUpdateReq,
+  ClaimUpdateResp,
+  TransferUpdateReq,
+  TransferUpdateResp,
 } from './types'
 
 export const generateCotaSmt = async (method: string, req: SmtReq): Promise<SmtResp> => {
@@ -62,14 +66,22 @@ export const generateWithdrawalCotaSmt = async (withdrawal: WithdrawalReq): Prom
   return (await generateCotaSmt('generate_withdrawal_cota_smt', withdrawal)) as Promise<WithdrawalResp>
 }
 
-export const generateTransferCotaSmt = async (transfer: TransferReq): Promise<TransferResp> => {
-  return (await generateCotaSmt('generate_transfer_cota_smt', transfer)) as Promise<TransferResp>
-}
-
 export const generateClaimCotaSmt = async (claim: ClaimReq): Promise<ClaimResp> => {
   return (await generateCotaSmt('generate_claim_cota_smt', claim)) as Promise<ClaimResp>
 }
 
+export const generateTransferCotaSmt = async (transfer: TransferReq): Promise<TransferResp> => {
+  return (await generateCotaSmt('generate_transfer_cota_smt', transfer)) as Promise<TransferResp>
+}
+
 export const generateUpdateCotaSmt = async (update: UpdateReq): Promise<UpdateResp> => {
   return (await generateCotaSmt('generate_update_cota_smt', update)) as Promise<UpdateResp>
+}
+
+export const generateClaimUpdateCotaSmt = async (claim: ClaimUpdateReq): Promise<ClaimUpdateResp> => {
+  return (await generateCotaSmt('generate_claim_update_cota_smt', claim)) as Promise<ClaimUpdateResp>
+}
+
+export const generateTransferUpdateCotaSmt = async (transfer: TransferUpdateReq): Promise<TransferUpdateResp> => {
+  return (await generateCotaSmt('generate_transfer_update_cota_smt', transfer)) as Promise<TransferUpdateResp>
 }

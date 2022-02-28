@@ -37,6 +37,7 @@ export const getCells = async (lock: CKBComponents.Script, type?: CKBComponents.
       '0x64',
     ],
   }
+  console.log(JSON.stringify(payload))
   const body = JSON.stringify(payload, null, '  ')
   try {
     let res = await fetch(CKB_NODE_INDEXER, {

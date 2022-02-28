@@ -3,28 +3,38 @@ import { addressToScript, scriptToHash } from '@nervosnetwork/ckb-sdk-utils'
 import { secp256k1Dep } from '../../account'
 import { generateUpdateCotaSmt } from '../../aggregator/cota'
 import { UpdateReq } from '../../aggregator/types'
-import { getLiveCell } from '../../collector'
-import { FEE, CotaTypeDep } from '../../constants'
-import { CKB_NODE_RPC, RECEIVER_COTA_PRIVATE_KEY, RECEIVER_ADDRESS, BOB_ADDRESS, BOB_COTA_PRIVATE_KEY } from '../../utils/config'
+import { getCells, getLiveCell } from '../../collector'
+import { FEE, CotaTypeDep, CotaTypeScript } from '../../constants'
+import {
+  CKB_NODE_RPC,
+  RECEIVER_COTA_PRIVATE_KEY,
+  RECEIVER_ADDRESS,
+  BOB_ADDRESS,
+  BOB_COTA_PRIVATE_KEY,
+} from '../../utils/config'
 
 const ckb = new CKB(CKB_NODE_RPC)
 
-export const updateCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
+export const updateCotaNFT = async (cotaLock: CKBComponents.Script) => {
+  const cotaCells = await getCells(cotaLock, CotaTypeScript)
+  if (!cotaCells || cotaCells.length === 0) {
+    throw new Error("Cota cell doesn't exist")
+  }
+  const cotaCell = cotaCells[0]
   const inputs = [
     {
-      previousOutput: cotaOutPoint,
+      previousOutput: cotaCell.outPoint,
       since: '0x0',
     },
   ]
-  const cotaCell = await getLiveCell(cotaOutPoint)
   const outputs = [cotaCell.output]
   outputs[0].capacity = `0x${(BigInt(outputs[0].capacity) - FEE).toString(16)}`
   const updateReq: UpdateReq = {
-    lockHash: scriptToHash(addressToScript(BOB_ADDRESS)),
+    lockHash: scriptToHash(addressToScript(RECEIVER_ADDRESS)),
     nfts: [
       {
-        cotaId: '0x2dd97617e685c0cd44b87cba7e8756ea67a721cd',
-        tokenIndex: '0x00000000',
+        cotaId: '0xb22585a8053af3fed0fd39127f5b1487ce08b756',
+        tokenIndex: '0x00000002',
         state: '0x00',
         characteristic: '0x2525250505050505050505050505050505050505',
       },
@@ -32,6 +42,7 @@ export const updateCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
   }
   const { smtRootHash, updateSmtEntry } = await generateUpdateCotaSmt(updateReq)
   const outputsData = [`0x00${smtRootHash}`]
+
   const cellDeps = [await secp256k1Dep(), CotaTypeDep]
   const rawTx = {
     version: '0x0',
@@ -45,7 +56,7 @@ export const updateCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
   rawTx.witnesses = rawTx.inputs.map((_, i) =>
     i > 0 ? '0x' : { lock: '', inputType: `0x05${updateSmtEntry}`, outputType: '' },
   )
-  const signedTx = ckb.signTransaction(BOB_COTA_PRIVATE_KEY)(rawTx)
+  const signedTx = ckb.signTransaction(RECEIVER_COTA_PRIVATE_KEY)(rawTx)
   console.log(JSON.stringify(signedTx))
   let txHash = await ckb.rpc.sendTransaction(signedTx, 'passthrough')
   console.info(`Update cota nft from mint tx has been sent with tx hash ${txHash}`)

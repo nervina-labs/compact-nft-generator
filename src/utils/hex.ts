@@ -66,24 +66,6 @@ export const u64ToLe = (u64: bigint) => {
   return `${viewLeft}${viewRight}`
 }
 
-export const encode = (hex: string) => {
-  if (!hex) {
-    return '0000'
-  }
-  return `${u16ToBe(remove0x(hex).length / 2)}${remove0x(hex)}`
-}
-
-export const decode = (hex: string) => {
-  if (hex === '' || hex === '0000') {
-    return ''
-  }
-  const size = parseInt(hex.slice(0, 4)) * 2
-  if (size !== hex.length - 4) {
-    throw new Error('Dynamic data format invalid')
-  }
-  return hex.slice(4)
-}
-
 export const utf8ToHex = (text: string) => {
   let result = text.trim()
   if (result.startsWith('0x')) {

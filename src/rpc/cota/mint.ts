@@ -3,14 +3,21 @@ import { addressToScript, scriptToHash, serializeOutPoint, serializeScript } fro
 import { secp256k1Dep } from '../../account'
 import { generateMintCotaSmt } from '../../aggregator/cota'
 import { MintReq } from '../../aggregator/types'
-import { getLiveCell } from '../../collector'
-import { FEE, CotaTypeDep } from '../../constants'
-import { CKB_NODE_RPC, SENDER_COTA_PRIVATE_KEY, SENDER_ADDRESS, RECEIVER_ADDRESS, ALICE_ADDRESS, BOB_ADDRESS } from '../../utils/config'
+import { getCells, getLiveCell } from '../../collector'
+import { FEE, CotaTypeDep, CotaTypeScript } from '../../constants'
+import {
+  CKB_NODE_RPC,
+  SENDER_COTA_PRIVATE_KEY,
+  SENDER_ADDRESS,
+  RECEIVER_ADDRESS,
+  ALICE_ADDRESS,
+  BOB_ADDRESS,
+} from '../../utils/config'
 import { append0x, u32ToBe } from '../../utils/hex'
 
 const ckb = new CKB(CKB_NODE_RPC)
 
-const batchWithdrawals = new Array(100).fill(0).map((_, index) => {
+const batchWithdrawals = new Array(20).fill(0).map((_, index) => {
   return {
     tokenIndex: append0x(u32ToBe(index)),
     state: '0x00',
@@ -38,25 +45,29 @@ const withdrawals = [
     characteristic: '0xa505050505050505050505050505050505050505',
     toLockScript: serializeScript(addressToScript(RECEIVER_ADDRESS)),
   },
-];
+]
 
-export const mintCotaNFT = async (cotaOutPoint: CKBComponents.OutPoint) => {
+export const mintCotaNFT = async (cotaLock: CKBComponents.Script) => {
+  const cotaCells = await getCells(cotaLock, CotaTypeScript)
+  if (!cotaCells || cotaCells.length === 0) {
+    throw new Error("Cota cell doesn't exist")
+  }
+  const cotaCell = cotaCells[0]
   const inputs = [
     {
-      previousOutput: cotaOutPoint,
+      previousOutput: cotaCell.outPoint,
       since: '0x0',
     },
   ]
 
-  const cotaCell = await getLiveCell(cotaOutPoint)
   const outputs = [cotaCell.output]
   outputs[0].capacity = `0x${(BigInt(outputs[0].capacity) - FEE).toString(16)}`
 
   const mintReq: MintReq = {
-    lockHash: scriptToHash(addressToScript(SENDER_ADDRESS)),
-    cotaId: '0x7fd23ef0c9c5e4059d8585957431b68d65bb9c97',
-    outPoint: append0x(serializeOutPoint(cotaOutPoint).slice(26)),
-    withdrawals: batchWithdrawals,
+    lockHash: scriptToHash(cotaLock),
+    cotaId: '0xb22585a8053af3fed0fd39127f5b1487ce08b756',
+    outPoint: append0x(serializeOutPoint(cotaCell.outPoint).slice(26)),
+    withdrawals: withdrawals,
   }
 
   const { smtRootHash, mintSmtEntry } = await generateMintCotaSmt(mintReq)

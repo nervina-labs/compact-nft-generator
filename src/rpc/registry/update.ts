@@ -1,9 +1,5 @@
 import CKB from '@nervosnetwork/ckb-sdk-core'
-import {
-  addressToScript,
-  scriptToHash,
-  serializeWitnessArgs,
-} from '@nervosnetwork/ckb-sdk-utils'
+import { scriptToHash, serializeWitnessArgs } from '@nervosnetwork/ckb-sdk-utils'
 import { registerCotaCells } from '../../aggregator/registry'
 import { getCells, collectInputs, getLiveCell } from '../../collector'
 import { FEE, CotaTypeScript, CotaTypeDep, AlwaysSuccessLockScript, AlwaysSuccessLockDep } from '../../constants'
@@ -11,7 +7,7 @@ import { CKB_NODE_RPC } from '../../utils/config'
 import { append0x, remove0x } from '../../utils/hex'
 
 const ckb = new CKB(CKB_NODE_RPC)
-const COTA_CELL_CAPACITY = BigInt(200) * BigInt(100000000)
+const COTA_CELL_CAPACITY = BigInt(160) * BigInt(100000000)
 
 const generateCotaOutputs = async (
   inputCapacity: bigint,
@@ -38,10 +34,11 @@ const generateCotaOutputs = async (
   return outputs
 }
 
-export const updateRegistryCell = async (registryOutPoint: CKBComponents.OutPoint, cotaAddresses: string[]) => {
-  const cotaLocks = cotaAddresses.map(address => addressToScript(address))
+export const updateRegistryCell = async (
+  registryOutPoint: CKBComponents.OutPoint,
+  cotaLocks: CKBComponents.Script[],
+) => {
   const cotaCount = BigInt(cotaLocks.length)
-
   const registryLock = AlwaysSuccessLockScript
   const liveCells = await getCells(registryLock)
   const { inputs: normalInputs, capacity } = collectInputs(liveCells, COTA_CELL_CAPACITY * cotaCount)
@@ -78,8 +75,8 @@ export const updateRegistryCell = async (registryOutPoint: CKBComponents.OutPoin
     witnesses: [],
   }
   rawTx.witnesses = rawTx.inputs.map((_, i) =>
-      i > 0 ? '0x' : serializeWitnessArgs({ lock: '', inputType: append0x(registrySmtEntry), outputType: '' }),
-    )
+    i > 0 ? '0x' : serializeWitnessArgs({ lock: '', inputType: append0x(registrySmtEntry), outputType: '' }),
+  )
   console.log(JSON.stringify(rawTx))
   let txHash = await ckb.rpc.sendTransaction(rawTx, 'passthrough')
   console.info(`Update registry cell tx has been sent with tx hash ${txHash}`)

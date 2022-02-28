@@ -10,7 +10,6 @@ type Byte24 = string
 type Byte32 = string
 type Bytes = string
 
-
 interface IndexerCell {
   blockNumber: CKBComponents.BlockNumber
   outPoint: CKBComponents.OutPoint
