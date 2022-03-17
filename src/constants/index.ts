@@ -14,7 +14,7 @@ export const CotaTypeScript: CKBComponents.Script = {
 }
 
 export const CotaTypeDep: CKBComponents.CellDep = {
-  outPoint: { txHash: '0xeb8c99e9aaff64ffea5a97100fa9e6c23e59afe7ab9789cd882e3bb9a930c3ea', index: '0x0' },
+  outPoint: { txHash: '0x2dfcab7790f3cabffe5cb349546dac8918b409481828218cc162f9de5754116f', index: '0x0' },
   depType: 'depGroup',
 }
 

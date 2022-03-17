@@ -23,7 +23,6 @@ import {
 } from './types'
 
 export const generateCotaSmt = async (method: string, req: SmtReq): Promise<SmtResp> => {
-  console.log(JSON.stringify(toSnakeCase(req)))
   let payload = {
     id: 1,
     jsonrpc: '2.0',
@@ -39,18 +38,18 @@ export const generateCotaSmt = async (method: string, req: SmtReq): Promise<SmtR
         headers: {
           'Content-Type': 'application/json',
         },
-        timeout: 20000,
+        timeout: 30000,
         data: body,
       })
     ).data
     if (response.error) {
-      console.error(response)
+      console.error('aggreagtor response error', response.error)
     } else {
-      console.log(JSON.stringify(response))
+      // console.log(JSON.stringify(response))
       return toCamelcase(response.result)
     }
   } catch (error) {
-    console.error('error', error)
+    console.error('aggreagtor request error', error)
   }
 }
 
